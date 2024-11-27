@@ -7,6 +7,8 @@ import AllProduct from "./page/product/ProductSunscreen";
 import PaketProductScrub from "./page/product/PaketProductScrub";
 import PaketLengkap from "./page/product/PaketLengkap";
 
+import DashboardAdmin from "./page/admin/Admin";
+
 const App = () => {
   return (
     <Routes>
@@ -16,6 +18,7 @@ const App = () => {
       <Route path="/produksunscreen" element={<AllProduct />} />
       <Route path="/produkscrab" element={<PaketProductScrub />} />
       <Route path="/produklengkap" element={<PaketLengkap />} />
+      <Route path="/admin" element={<DashboardAdmin />} />
     </Routes>
   );
 };

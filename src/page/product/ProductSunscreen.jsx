@@ -1,5 +1,4 @@
 import React from "react";
-import product from "../../assets/product.jpg";
 import productsunscreen from "../../assets/productsunscreen.jpg";
 import { AiFillStar } from "react-icons/ai";
 
