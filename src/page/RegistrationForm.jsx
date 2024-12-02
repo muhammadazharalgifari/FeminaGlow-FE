@@ -169,8 +169,8 @@ const RegistrationForm = () => {
                   <option value="" disabled>
                     Select Role
                   </option>
-                  <option value="1">User</option>
-                  <option value="2">Admin</option>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
                 </select>
               </div>
              

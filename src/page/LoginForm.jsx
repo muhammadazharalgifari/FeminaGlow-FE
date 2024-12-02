@@ -26,6 +26,7 @@ const LoginForm = () => {
       if (token) {
         localStorage.setItem("token", token); // Menyimpan token JWT
         localStorage.setItem("role", role); // Menyimpan role
+        
 
         // Navigasi berdasarkan role
         if (role === "admin") {
