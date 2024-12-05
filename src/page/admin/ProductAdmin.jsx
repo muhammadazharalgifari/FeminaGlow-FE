@@ -147,11 +147,13 @@ const ProductAdmin = () => {
       title: "Stock",
       dataIndex: "stock",
       key: "stock",
+     
     },
     {
       title: "Category",
       dataIndex: "categoryId",
       key: "categoryId",
+      sorter: (a, b) => a.categoryId - b.categoryId,
     },
     {
       title: "User",
