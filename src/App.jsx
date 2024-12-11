@@ -14,24 +14,22 @@ import EditUser from "./page/admin/EditUser";
 import ProductAdmin from "./page/admin/ProductAdmin";
 import EditProduct from "./page/admin/EditProduct";
 
-
-
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<LoginForm />} />
       <Route path="/registrasi" element={<RegistrationForm />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/produksunscreen" element={<AllProduct />} />
+      <Route path="/product/:categoryId" element={<AllProduct />} />
       <Route path="/produkscrab" element={<PaketProductScrub />} />
       <Route path="/produklengkap" element={<PaketLengkap />} />
       <Route path="/admin" element={<DashboardAdmin />} />
       <Route path="/notfound" element={<NotFound />} />
-      <Route path="/admin/edit/user" element={<EditUser />} /> 
-      <Route path ="/admin/user" element={<UserTable />} />
-      <Route path ="/admin/profile" element={<ProfileAdmin />} />
-      <Route path ="/admin/products" element={<ProductAdmin />} />
-      <Route path ="/admin/products/edit/:id" element={<EditProduct />} />
+      <Route path="/admin/edit/user" element={<EditUser />} />
+      <Route path="/admin/user" element={<UserTable />} />
+      <Route path="/admin/profile" element={<ProfileAdmin />} />
+      <Route path="/admin/products" element={<ProductAdmin />} />
+      <Route path="/admin/products/edit/:id" element={<EditProduct />} />
     </Routes>
   );
 };

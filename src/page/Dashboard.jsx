@@ -9,6 +9,8 @@ import {
   AiOutlineWhatsApp,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "../../ax";
 
 const Dashboard = () => {
   // Scroll To Section Button
@@ -26,11 +28,24 @@ const Dashboard = () => {
   };
 
   // Data Dumy
-  const cartItems = [
-    { id: 1, name: "Paket Sunscreen", price: 100000 },
-    { id: 2, name: "Paket Body Scrub", price: 150000 },
-    { id: 3, name: "Paket Lengkap", price: 200000 },
-  ];
+  // const cartItems = [
+  //   { id: 1, name: "Paket Sunscreen", price: 100000 },
+  //   { id: 2, name: "Paket Body Scrub", price: 150000 },
+  //   { id: 3, name: "Paket Lengkap", price: 200000 },
+  // ];
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["getAllCategories"],
+    queryFn: async () => {
+      try {
+        const result = await axiosInstance.get("/api/categories");
+        console.log(result.data.data);
+        return result.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
 
   return (
     <section className="w-full h-screen bg-white">
@@ -72,19 +87,19 @@ const Dashboard = () => {
           </nav>
           <div className="flex w-[220px] justify-end items-center z-10 gap-2">
             {/* nontifikasi jumlah produk */}
-            {cartItems.length > 0 && (
+            {/* {cartItems.length > 0 && (
               <span className="absolute top-[5px] right-[3%] bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
                 {cartItems.length}
               </span>
-            )}
+            )} */}
             {/* pup up button keranjang */}
-            {!showPopUp && (
+            {/* {!showPopUp && (
               <BsBasket2Fill
                 onClick={handlePopUp}
                 size={23}
                 className="cursor-pointer"
               />
-            )}
+            )} */}
             <BsFillPersonFill size={25} className="cursor-pointer" />
           </div>
         </div>
@@ -106,7 +121,7 @@ const Dashboard = () => {
         </div>
 
         {/*   Pop Up Keranjang */}
-        {showPopUp && (
+        {/* {showPopUp && (
           <div className="fixed top-0 right-0 w-80 h-screen bg-white shadow-lg z-50 p-4">
             <h2 className="text-xl font-bold mb-4">Keranjang Anda</h2>
             <div className="space-y-4">
@@ -130,7 +145,7 @@ const Dashboard = () => {
               Check Out
             </button>
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Section 2: Kategori Produk */}
@@ -146,68 +161,40 @@ const Dashboard = () => {
           <p className="text-lg mb-10 font-poppins">
             Temukan produk-produk terbaik kami untuk perawatan kulit Anda!
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-36">
-            <div className="bg-white p-6 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Paket Sunscreen</h3>
-              <div className="flex items-center justify-center">
-                <img
-                  src={p2}
-                  alt="Paket Sunscreen"
-                  className="max-w-[110%] max-h-[100%] object-contain"
-                />
-              </div>
-              <p className="text-gray-700 text-justify">
-                Perlindungan kulit optimal dari sinar matahari dengan paket
-                sunscreen ini!
-              </p>
+          {isLoading ? (
+            <p className="text-lg">Loading...</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36">
+              {data.map((category) => (
+                <div
+                  className="bg-white p-6 shadow-md rounded-lg"
+                  key={category.id}
+                >
+                  <h3 className="text-xl font-semibold mb-4">
+                    {category.name}
+                  </h3>
+                  <div className="flex items-center justify-center">
+                    <img
+                      src={p2}
+                      alt="Paket Sunscreen"
+                      className="max-w-[110%] max-h-[100%] object-contain"
+                    />
+                  </div>
+                  <p className="text-gray-700 text-justify">
+                    Perlindungan kulit optimal dari sinar matahari dengan paket
+                    sunscreen ini!
+                  </p>
 
-              <Link
-                to="/produksunscreen"
-                className="flex justify-end pt-3 text-blue-500 font-poppins hover:text-blue-800"
-              >
-                Selengkapnya
-              </Link>
+                  <Link
+                    to={`/product/${category.id}`}
+                    className="flex items-center justify-center font-poppins bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg mt-4 h-12"
+                  >
+                    Lihat Produk
+                  </Link>
+                </div>
+              ))}
             </div>
-            <div className="bg-white p-6 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Paket Body Scrub</h3>
-              <div className="flex items-center justify-center">
-                <img
-                  src={p2}
-                  alt="Paket Body Scrub"
-                  className="max-w-[110%] max-h-[100%] object-contain"
-                />
-              </div>
-              <p className="text-gray-700 text-justify">
-                Dapatkan kulit halus dan cerah dengan produk body scrub kami!
-              </p>
-              <Link
-                to="/produkscrab"
-                className="flex justify-end pt-3 text-blue-500 font-poppins hover:text-blue-800"
-              >
-                Selengkapnya
-              </Link>
-            </div>
-            <div className="bg-white p-6 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Paket Lengkap</h3>
-              <div className="flex items-center justify-center">
-                <img
-                  src={p2}
-                  alt="Paket Lengkap"
-                  className="max-w-[110%] max-h-[100%] object-contain"
-                />
-              </div>
-              <p className="text-gray-700 text-justify">
-                Solusi perawatan kulit menyeluruh dengan paket lengkap dari
-                kami!
-              </p>
-              <Link
-                to="/produklengkap"
-                className="flex justify-end pt-3 text-blue-500 font-poppins hover:text-blue-800"
-              >
-                Selengkapnya
-              </Link>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
