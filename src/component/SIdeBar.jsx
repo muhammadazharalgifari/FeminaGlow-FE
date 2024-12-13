@@ -4,26 +4,23 @@ import { DashboardOutlined, AppstoreAddOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 const Sider = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const items = [
     {
+      key: "/admin",
       label: "Dashboard",
-      key: "1",
       icon: <DashboardOutlined />,
-      onClick: () => navigate("/admin"),
     },
     {
+      key: "/admin/user",
       label: "User",
-      key: "2",
       icon: <AppstoreAddOutlined />,
-      onClick: () => navigate("/admin/user"),
     },
     {
+      key: "/admin/products",
       label: "Products",
-      key: "3",
       icon: <AppstoreAddOutlined />,
-      onClick: () => navigate("/admin/products"),
     },
   ];
 
@@ -32,7 +29,8 @@ const Sider = () => {
       <div className="logo" />
       <Menu
         theme="dark"
-        defaultSelectedKeys={["key"]}
+        onClick={(e) => navigate(e.key)}
+        defaultSelectedKeys={[location.pathname]}
         mode="inline"
         items={items}
       />
