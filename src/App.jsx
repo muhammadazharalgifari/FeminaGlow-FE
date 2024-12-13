@@ -27,7 +27,7 @@ const App = () => {
       <Route path="/produklengkap" element={<PaketLengkap />} />
       <Route path="/admin" element={<DashboardAdmin />} />
       <Route path="/notfound" element={<NotFound />} />
-      <Route path="/admin/edit/user" element={<EditUser />} /> 
+      <Route path="/admin/edit/user/:id" element={<EditUser />} /> 
       <Route path ="/admin/user" element={<UserTable />} />
       <Route path ="/admin/profile" element={<ProfileAdmin />} />
       <Route path ="/admin/products" element={<ProductAdmin />} />
