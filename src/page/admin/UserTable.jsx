@@ -143,7 +143,7 @@ const UserTable = () => {
         >
           <BreadcrumbComponent/>
           <div>
-            <h2>User List</h2>
+            
             {loading ? (
               <Spin size="large" />
             ) : (

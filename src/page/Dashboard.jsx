@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import bgdashboard from "../assets/bgdashboard.jpg";
 import p2 from "../assets/p2.png";
 import itemdas from "../assets/itemdas.png";
+import { Carousel } from "antd";
 import { BsBasket2Fill, BsFillPersonFill } from "react-icons/bs";
 import {
   AiFillInstagram,
@@ -20,6 +21,21 @@ const Dashboard = () => {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const [email, setEmail] = useState("");
+  // Ambil Email Pengguna Dari Local Storage
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+  });
+
+  // Pop Up Profile
+  const [showProfile,setShowProfile]=useState(false);
+  const handleProfile =()=>{
+    setShowProfile(!showProfile);
+  }
 
   // Pop Up Keranjang
   const [showPopUp, setShowPopUp] = useState(false);
@@ -58,7 +74,7 @@ const Dashboard = () => {
         <div className="absolute inset-0 bg-black opacity-20"></div>
 
         {/* Navbar */}
-        <div className="h-16 flex w-full items-center px-10">
+        <div className="h-16 flex w-full items-center px-10 ">
           <div className="flex w-[280px] items-center">
             <h1 className="font-pacifico text-3xl">Shineskin Skincare</h1>
           </div>
@@ -100,7 +116,8 @@ const Dashboard = () => {
                 className="cursor-pointer"
               />
             )} */}
-            <BsFillPersonFill size={25} className="cursor-pointer" />
+            <h1>{email}</h1>
+            <BsFillPersonFill  onClick={handleProfile} size={25} className="cursor-pointer" />
           </div>
         </div>
 
@@ -147,11 +164,10 @@ const Dashboard = () => {
           </div>
         )} */}
       </div>
-
       {/* Section 2: Kategori Produk */}
       <section
         id="product"
-        className="w-full py-16 bg-gray-300 bg-cover bg-center  relative bg-[url('/src/assets/bg.jpg')]"
+        className="w-full h-screen py-20 bg-gray-300 bg-cover bg-center relative bg-[url('/src/assets/bg.jpg')]"
       >
         <div className="absolute inset-0 bg-black opacity-20 "></div>
         <div className="container mx-auto px-10 text-center relative z-10">
@@ -164,44 +180,62 @@ const Dashboard = () => {
           {isLoading ? (
             <p className="text-lg">Loading...</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36">
+            <Carousel
+              dots
+              arrows
+              slidesToShow={4}
+              slidesToScroll={4}
+              responsive={[
+                {
+                  breakpoint: 768,
+                  settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                  },
+                },
+                {
+                  breakpoint: 1024,
+                  settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                  },
+                },
+              ]}
+            >
               {data.map((category) => (
-                <div
-                  className="bg-white p-6 shadow-md rounded-lg"
-                  key={category.id}
-                >
-                  <h3 className="text-xl font-semibold mb-4">
-                    {category.name}
-                  </h3>
-                  <div className="flex items-center justify-center">
-                    <img
-                      src={p2}
-                      alt="Paket Sunscreen"
-                      className="max-w-[110%] max-h-[100%] object-contain"
-                    />
+                <div className="p-4" key={category.id}>
+                  <div className="bg-white p-6 shadow-md rounded-lg">
+                    <h3 className="text-xl font-semibold mb-4">
+                      {category.name}
+                    </h3>
+                    <div className="flex items-center justify-center">
+                      <img
+                        src={p2}
+                        alt="Paket Sunscreen"
+                        className="max-w-[110%] max-h-[100%] object-contain"
+                      />
+                    </div>
+                    <p className="text-gray-700 text-justify">
+                      Perlindungan kulit optimal dari sinar matahari dengan
+                      paket sunscreen ini!
+                    </p>
+                    <Link
+                      to={`/product/${category.id}`}
+                      className="flex items-center justify-center font-poppins bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg mt-4 h-12"
+                    >
+                      Lihat Produk
+                    </Link>
                   </div>
-                  <p className="text-gray-700 text-justify">
-                    Perlindungan kulit optimal dari sinar matahari dengan paket
-                    sunscreen ini!
-                  </p>
-
-                  <Link
-                    to={`/product/${category.id}`}
-                    className="flex items-center justify-center font-poppins bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg mt-4 h-12"
-                  >
-                    Lihat Produk
-                  </Link>
                 </div>
               ))}
-            </div>
+            </Carousel>
           )}
         </div>
       </section>
-
-      {/* Section 3: About Us */}
+      ;{/* Section 3: About Us */}
       <section
         id="about"
-        className="w-full h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
+        className="w-full -mt-10 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
       >
         <div className="absolute inset-0 bg-black opacity-25"></div>
         <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-4">
@@ -242,7 +276,6 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-
       {/* Section 4: Promo */}
       <section
         id="promo"
@@ -276,7 +309,6 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <section
         id="footer"
