@@ -36,8 +36,8 @@ const AllProduct = () => {
   return (
     <div className="bg-gray-300 min-h-screen font-poppins bg-[url('/src/assets/bg.jpg')]">
       {/* Breadcrumb */}
-      <nav className="text-gray-500 text-sm pt-4 px-10">
-        <Link to="/dashboard" className="hover:text-gray-800">
+      <nav className="text-sm pt-4 px-10">
+        <Link to="/dashboard" className="hover:text-gray-600">
           Home
         </Link>
         <span className="mx-2">/</span>
@@ -52,7 +52,9 @@ const AllProduct = () => {
 
       <div className="py-6 text-center">
         <h1 className="font-pacifico text-3xl mb-4">Produk Kami</h1>
-        <p className="font-poppins text-lg tracking-wider">Pilih produk yang anda inginkan dan tambahkan ke keranjang</p>
+        <p className="font-poppins text-lg tracking-wider">
+          Pilih produk yang anda inginkan dan tambahkan ke keranjang
+        </p>
       </div>
 
       {/* Daftar Product */}
@@ -92,10 +94,7 @@ const AllProduct = () => {
                     </p>
 
                     <div className="flex items-center space-x-4 mb-4">
-                      <label
-                        htmlFor="quantity"
-                        className="font-semibold"
-                      >
+                      <label htmlFor="quantity" className="font-semibold">
                         Qty :
                       </label>
                       <input
