@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AiOutlineInstagram,
   AiOutlineMail,
@@ -13,13 +13,22 @@ import { Link } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import axiosInstance from "../../ax";
 import bgdashboard from "../assets/bgdashboard.jpg";
-import itemdas from "../assets/itemdas.png";
+import promo from "../assets/promo.png";
 import { useCart } from "./Cart";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const Dashboard = () => {
   const { cartItems, totalPrice, updateQuantity, removeFromCart } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
 
+  useEffect(() => {
+    AOS.init({
+      
+      easing: "ease-in-out", 
+      once: true, 
+    });
+  }, []);
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["getAllCategories"],
     queryFn: async () => {
@@ -34,7 +43,7 @@ const Dashboard = () => {
   });
 
   return (
-    <section className="w-full h-screen bg-white">
+    <section className="w-full h-screen bg-white " id="home">
       {/* Section 1: Hero Section */}
       <div
         className="w-full h-screen bg-cover bg-center relative"
@@ -49,7 +58,7 @@ const Dashboard = () => {
             <h1 className="font-pacifico text-3xl">Shineskin Skincare</h1>
           </div>
           <nav className="flex justify-center font-poppins text-black gap-6 z-30 flex-grow mr-8 items-center cursor-pointer">
-            <ScrollLink to="dashboard" smooth={true} duration={500}>
+            <ScrollLink to="home" smooth={true} duration={500}>
               Home
             </ScrollLink>
             <ScrollLink to="product" smooth={true} duration={500}>
@@ -141,8 +150,11 @@ const Dashboard = () => {
         </div>
 
         {/* Hero Content */}
-        <div className="w-full h-screen flex flex-col justify-center pl-[160px] pb-16 relative z-10 gap-6 max-w-3xl">
-          <h1 className="text-black font-poppins text-7xl font-bold select-none">
+        <div className="w-full h-screen flex flex-col justify-center pl-[160px] pb-16 relative z-10 gap-6 max-w-3xl" data-aos="fade-up" data-aos-duration="1500">
+          <h1
+            
+            className="text-black font-poppins text-7xl font-bold select-none"
+          >
             Selamat Datang
           </h1>
           <h2 className="text-black text-3xl font-poppins font-light select-none">
@@ -162,7 +174,6 @@ const Dashboard = () => {
           </ScrollLink>
         </div>
       </div>
-
       {/* Section 2: Kategori Produk */}
       <section
         id="product"
@@ -172,9 +183,7 @@ const Dashboard = () => {
         <div className="absolute inset-0 bg-black opacity-10 z-10"></div>
 
         <div className="container mx-auto px-10 text-center relative z-20">
-          <h2 className="text-3xl mb-6 font-pacifico">
-            Kategori Produk
-          </h2>
+          <h2 className="text-3xl mb-6 font-pacifico">Kategori Produk</h2>
           <p className="text-lg mb-10 font-poppins tracking-wider">
             Temukan produk-produk terbaik kami untuk perawatan kulit Anda!
           </p>
@@ -185,7 +194,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-36 font-poppins select-none">
               {data.map((category) => (
                 <div
-                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
+                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between" data-aos="zoom-in" data-aos-duration="1000"
                   key={category.id}
                 >
                   <h3 className="text-lg font-semibold mb-6 tracking-widest uppercase">
@@ -215,17 +224,16 @@ const Dashboard = () => {
           )}
         </div>
       </section>
-
-      {/* Section 3: About Us */}
+      ;{/* Section 3: About Us */}
       <section
         id="about"
-        className="w-full h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
+        className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
       >
         {/* Overlay */}
         <div className="absolute inset-0 bg-black opacity-20"></div>
 
         <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-6">
-          <div className="max-w-lg bg-white p-8 rounded-lg shadow-lg">
+          <div className="max-w-lg bg-white p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-duration="1500">
             <h1 className="font-pacifico font-light text-3xl">Tentang Kami</h1>
             <p className="font-poppins pt-6 text-justify">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
@@ -235,7 +243,7 @@ const Dashboard = () => {
               perferendis velit, facere quam!
             </p>
           </div>
-          <div className="max-w-lg bg-white rounded-lg shadow-lg p-8">
+          <div className="max-w-lg bg-white rounded-lg shadow-lg p-8" data-aos="fade-up" data-aos-duration="1500">
             <h1 className="text-3xl font-pacifico font-light pb-6">
               Kontak Kami
             </h1>
@@ -264,7 +272,6 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-
       {/* Section 4: Promo */}
       <section
         id="promo"
@@ -276,31 +283,34 @@ const Dashboard = () => {
         <div className="w-full h-screen flex pl-[180px] pt-16 relative z-10 gap-4">
           <div className="w-1/2 h-full flex">
             <img
-              src={itemdas}
+              src={promo}
               alt="Promo Image"
               className="w-full h-full object-cover object-bottom"
             />
           </div>
           <div className="w-1/2 h-full flex justify-center p-20">
             <div className="flex flex-col justify-center">
-              <h1 className="text-4xl font-bold font-poppins bg-amber-200 items-center justify-center flex w-[500px] h-[70px] shadow-xl">
-                Promo Bulan Ini
+              <h1 className=" blink text-9xl font-bold font-poppins items-center justify-center flex flex-col ">
+                BIG SALE
+                
+                <h1 className=" blink2 text-white">BIG SALE</h1>
               </h1>
               <p className="mt-4 text-gray-700 font-poppins text-justify">
                 Tampil Cantik dan Bersinar di Bulan Ini! Promo Khusus Diskon
                 Produk Perawatan Kulit hingga 50%
               </p>
+              <div className="flex justify-center">
               <button
                 onClick={() => scrollToSection("product")}
                 className=" z-10text-black font-poppins border hover:bg-amber-300 border-black bg-amber-200 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
               >
                 Belanja Sekarang
               </button>
+              </div>
             </div>
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <section
         id="footer"

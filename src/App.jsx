@@ -12,6 +12,7 @@ import LoginForm from "./page/LoginForm";
 import NotFound from "./page/NotFound";
 import AllProduct from "./page/product/ProductSunscreen";
 import RegistrationForm from "./page/RegistrationForm";
+import CategoryAdmin from "./page/admin/CategoryAdmin";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/admin/user" element={<UserTable />} />
         <Route path="/admin/profile" element={<ProfileAdmin />} />
         <Route path="/admin/products" element={<ProductAdmin />} />
+        <Route path="/admin/category" element={<CategoryAdmin />} />
         <Route path="/admin/products/edit/:id" element={<EditProduct />} />
       </Routes>
     </Cart>
