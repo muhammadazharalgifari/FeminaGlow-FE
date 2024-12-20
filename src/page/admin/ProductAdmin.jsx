@@ -24,10 +24,9 @@ const ProductAdmin = () => {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState(""); // Track modal type (add product, add category, or edit product)
+  const [modalType, setModalType] = useState(""); // Track modal type (add product or edit product)
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
-  const [categoryToDelete, setCategoryToDelete] = useState(null); // Track category to delete
   const [productToEdit, setProductToEdit] = useState(null); // Track product to edit
   const navigate = useNavigate();
 
@@ -91,85 +90,6 @@ const ProductAdmin = () => {
     fetchInitialData();
   }, [navigate]);
 
-  const handleDeleteCategory = async () => {
-    if (!categoryToDelete) {
-      notification.warning({
-        message: "Select Category",
-        description: "Please select a category to delete.",
-      });
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.delete(
-        `http://localhost:3888/api/delete/category/${categoryToDelete}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (response.status === 200) {
-        notification.success({
-          message: "Category deleted successfully",
-        });
-        setCategories(
-          categories.filter((category) => category.id !== categoryToDelete)
-        );
-        setCategoryToDelete(null); // Reset category selection after deletion
-      } else {
-        notification.error({
-          message: "Failed to delete category",
-        });
-      }
-    } catch (error) {
-      console.error("Error deleting category:", error);
-      notification.error({
-        message: "Error deleting category",
-        description: error.message,
-      });
-    }
-  };
-
-  // Add new category
-  const handleAddCategory = async (values) => {
-    const token = localStorage.getItem("token");
-    const data = {
-      name: values.name,
-    };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3888/api/category",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 201) {
-        notification.success({
-          message: "Category created successfully!",
-        });
-        setCategories([...categories, response.data.category]); // Add new category
-        setModalVisible(false);
-        form.resetFields();
-      } else {
-        notification.error({
-          message: "Failed to create category.",
-        });
-      }
-    } catch (error) {
-      console.error("Error adding category:", error);
-      notification.error({
-        message: "Error adding category",
-        description: error.message,
-      });
-    }
-  };
-
   // Add new product
   const handleAddProduct = async (values) => {
     const token = localStorage.getItem("token");
@@ -211,54 +131,57 @@ const ProductAdmin = () => {
   };
 
   // Edit product
-  const handleEditProduct = async (values) => {
+ // Edit product
+const handleEditProduct = async (values) => {
+  const token = localStorage.getItem("token");
+  const formData = new FormData();
 
-    const token = localStorage.getItem("token");
-    const formData = new FormData();
-
-    formData.append("name", values.name);
-    formData.append("price", values.price);
-    formData.append("description", values.description);
-    formData.append("stock", values.stock);
+  formData.append("name", values.name);
+  formData.append("price", values.price);
+  formData.append("description", values.description);
+  formData.append("stock", values.stock);
+  if (values.imageProduct?.[0]?.originFileObj) {
     formData.append("imageProduct", values.imageProduct[0].originFileObj);
+  }
 
-    try {
-      const response = await axios.put(
-        `http://localhost:3888/api/update/product/${productToEdit.id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+  try {
+    const response = await axios.put(
+      `http://localhost:3888/api/update/product/${productToEdit.id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.status === "success") {
+      notification.success({
+        message: "Success",
+        description: response.data.message,
+      });
+
+      // Update product list without page reload
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.id === productToEdit.id ? response.data.product : product
+        )
       );
 
-      if (response.data.status === "success") {
-        notification.success({
-          message: "Success",
-          description: response.data.message,
-        });
-
-        // Update product list with the updated product without reloading the page
-        setProducts(
-          products.map((product) =>
-            product.id === productToEdit.id ? response.data.product : product
-          )
-        );
-
-        // Close the modal and reset the form
-        setModalVisible(false);
-        form.resetFields();
-        setProductToEdit(null); // Reset the productToEdit state
-      }
-    } catch (error) {
-      console.error("Error editing product:", error);
-      notification.error({
-        message: "Error",
-        description: "Failed to edit product.",
-      });
+      // Close modal and reset the form
+      setModalVisible(false);
+      form.resetFields();
+      setProductToEdit(null); // Reset the productToEdit state
     }
-  };
+  } catch (error) {
+    console.error("Error editing product:", error);
+    notification.error({
+      message: "Error",
+      description: "Failed to edit product.",
+    });
+  }
+};
+
 
   // Delete a product
   const handleDelete = async (id) => {
@@ -363,41 +286,6 @@ const ProductAdmin = () => {
             >
               Add Product
             </Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                setModalType("category");
-                setModalVisible(true);
-              }}
-            >
-              Add Category
-            </Button>
-
-            <div className="flex gap-3">
-              <Button
-                type="primary"
-                danger
-                onClick={handleDeleteCategory}
-                disabled={!categoryToDelete}
-                style={{ marginLeft: 8 }}
-              >
-                Delete Category
-              </Button>
-
-              {/* Dropdown to select category to delete */}
-              <Select
-                value={categoryToDelete}
-                onChange={(value) => setCategoryToDelete(value)}
-                style={{ width: 200 }}
-                placeholder="Select a category to delete"
-              >
-                {categories.map((category) => (
-                  <Select.Option key={category.id} value={category.id}>
-                    {category.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </div>
           </div>
           {loadingProducts || loadingCategories ? (
             <Spin size="large" />
@@ -417,7 +305,7 @@ const ProductAdmin = () => {
             ? "Add Product"
             : modalType === "editProduct"
             ? "Edit Product"
-            : "Add Category"
+            : ""
         }
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
@@ -495,19 +383,7 @@ const ProductAdmin = () => {
               </Upload>
             </Form.Item>
           </Form>
-        ) : (
-          <Form form={form} onFinish={handleAddCategory} layout="vertical">
-            <Form.Item
-              name="name"
-              label="Category Name"
-              rules={[
-                { required: true, message: "Please input category name!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Form>
-        )}
+        ) : null}
       </Modal>
     </Layout>
   );

@@ -19,6 +19,10 @@ const BreadcrumbComponent = () => {
       title: <Link to="/admin/products">Products</Link>,
       link: "/admin/products",
     },
+    {
+      title: <Link to="/admin/category">Category</Link>,
+      link: "/admin/category",
+    }
   ];
 
   const breadcrumbItems = pathnames.map((path, index) => {

@@ -4,3 +4,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Animasi pertama: warna teks bergantian dari hitam ke putih */
+@keyframes blackWhiteBlink {
+    0% {
+      color: black;
+    }
+    50% {
+      color: white;
+    }
+    100% {
+      color: black;
+    }
+  }
+  
+  /* Terapkan animasi blackWhiteBlink ke elemen dengan kelas .blink */
+  .blink {
+    animation: blackWhiteBlink 1s infinite;
+  }
+  
+  /* Animasi kedua: warna teks bergantian dari putih ke hitam */
+  @keyframes whiteBlackBlink {
+    0% {
+      color: white;
+    }
+    50% {
+      color: black;
+    }
+    100% {
+      color: white;
+    }
+  }
+  
+  /* Terapkan animasi whiteBlackBlink ke elemen dengan kelas .blink2 */
+  .blink2 {
+    animation: whiteBlackBlink 1s infinite;
+  }
+  

@@ -18,6 +18,12 @@ const Sider = () => {
       icon: <AppstoreAddOutlined />,
     },
     {
+      key:"/admin/category",
+      label: "Category",
+      icon: <AppstoreAddOutlined />,
+
+    },
+    {
       key: "/admin/products",
       label: "Products",
       icon: <AppstoreAddOutlined />,
