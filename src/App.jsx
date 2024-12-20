@@ -1,36 +1,35 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import LoginForm from "./page/LoginForm";
-import RegistrationForm from "./page/RegistrationForm";
-import Dashboard from "./page/Dashboard";
-import AllProduct from "./page/product/ProductSunscreen";
-import PaketProductScrub from "./page/product/PaketProductScrub";
-import PaketLengkap from "./page/product/PaketLengkap";
 import DashboardAdmin from "./page/admin/Admin";
-import NotFound from "./page/NotFound";
-import UserTable from "./page/admin/UserTable";
-import ProfileAdmin from "./page/admin/ProfileAdmin";
+import EditProduct from "./page/admin/EditProduct";
 import EditUser from "./page/admin/EditUser";
 import ProductAdmin from "./page/admin/ProductAdmin";
-import EditProduct from "./page/admin/EditProduct";
+import ProfileAdmin from "./page/admin/ProfileAdmin";
+import UserTable from "./page/admin/UserTable";
+import { Cart } from "./page/Cart";
+import Dashboard from "./page/Dashboard";
+import LoginForm from "./page/LoginForm";
+import NotFound from "./page/NotFound";
+import AllProduct from "./page/product/ProductSunscreen";
+import RegistrationForm from "./page/RegistrationForm";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<LoginForm />} />
-      <Route path="/registrasi" element={<RegistrationForm />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/product/:categoryId" element={<AllProduct />} />
-      <Route path="/produkscrab" element={<PaketProductScrub />} />
-      <Route path="/produklengkap" element={<PaketLengkap />} />
-      <Route path="/admin" element={<DashboardAdmin />} />
-      <Route path="/notfound" element={<NotFound />} />
-      <Route path="/admin/edit/user" element={<EditUser />} />
-      <Route path="/admin/user" element={<UserTable />} />
-      <Route path="/admin/profile" element={<ProfileAdmin />} />
-      <Route path="/admin/products" element={<ProductAdmin />} />
-      <Route path="/admin/products/edit/:id" element={<EditProduct />} />
-    </Routes>
+    <Cart>
+      <Routes>
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/registrasi" element={<RegistrationForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/product/:categoryId" element={<AllProduct />} />
+        <Route path="/admin" element={<DashboardAdmin />} />
+        <Route path="/notfound" element={<NotFound />} />
+        <Route path="/admin/edit/user" element={<EditUser />} />
+        <Route path="/admin/user" element={<UserTable />} />
+        <Route path="/admin/profile" element={<ProfileAdmin />} />
+        <Route path="/admin/products" element={<ProductAdmin />} />
+        <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+      </Routes>
+    </Cart>
   );
 };
 
