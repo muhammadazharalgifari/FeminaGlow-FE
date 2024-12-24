@@ -19,16 +19,16 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 const Dashboard = () => {
-  const { cartItems, totalPrice, updateQuantity, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
 
   useEffect(() => {
     AOS.init({
-      
-      easing: "ease-in-out", 
-      once: true, 
+      easing: "ease-in-out",
+      once: true,
     });
   }, []);
+
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["getAllCategories"],
     queryFn: async () => {
@@ -101,7 +101,7 @@ const Dashboard = () => {
                   ✕
                 </button>
 
-                {cartItems.map((item) => (
+                {cartItems?.map((item) => (
                   <div
                     key={item.id}
                     className="flex justify-between items-center border-b pb-4 gap-4"
@@ -150,11 +150,12 @@ const Dashboard = () => {
         </div>
 
         {/* Hero Content */}
-        <div className="w-full h-screen flex flex-col justify-center pl-[160px] pb-16 relative z-10 gap-6 max-w-3xl" data-aos="fade-up" data-aos-duration="1500">
-          <h1
-            
-            className="text-black font-poppins text-7xl font-bold select-none"
-          >
+        <div
+          className="w-full h-screen flex flex-col justify-center pl-[160px] pb-16 relative z-10 gap-6 max-w-3xl"
+          data-aos="fade-up"
+          data-aos-duration="1500"
+        >
+          <h1 className="text-black font-poppins text-7xl font-bold select-none">
             Selamat Datang
           </h1>
           <h2 className="text-black text-3xl font-poppins font-light select-none">
@@ -191,10 +192,12 @@ const Dashboard = () => {
           {isLoading ? (
             <p className="text-lg">Loading...</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-36 font-poppins select-none">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36 font-poppins select-none">
               {data.map((category) => (
                 <div
-                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between" data-aos="zoom-in" data-aos-duration="1000"
+                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
+                  data-aos="zoom-in"
+                  data-aos-duration="1000"
                   key={category.id}
                 >
                   <h3 className="text-lg font-semibold mb-6 tracking-widest uppercase">
@@ -207,13 +210,13 @@ const Dashboard = () => {
                       className="w-full h-60 object-contain rounded-lg"
                     />
                   </div>
-                  <p className="text-gray-700 text-justify text-sm min-h-[4rem] pt-6 line-clamp-3">
+                  <p className="text-gray-700 text-justify text-sm min-h-[4rem] pt-6">
                     {category.description}
                   </p>
 
                   <Link
                     to={`/product/${category.id}`}
-                    className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 transition-all duration-500 text-white rounded-lg mt-4 h-12 shadow-lg gap-2 font-semibold"
+                    className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 transition-all duration-500 text-white rounded-lg mt-8 h-12 shadow-lg gap-2 font-semibold"
                   >
                     <IoArrowRedo className="text-xl" />
                     Lihat Produk
@@ -233,7 +236,11 @@ const Dashboard = () => {
         <div className="absolute inset-0 bg-black opacity-20"></div>
 
         <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-6">
-          <div className="max-w-lg bg-white p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-duration="1500">
+          <div
+            className="max-w-lg bg-white p-8 rounded-lg shadow-lg"
+            data-aos="fade-up"
+            data-aos-duration="1500"
+          >
             <h1 className="font-pacifico font-light text-3xl">Tentang Kami</h1>
             <p className="font-poppins pt-6 text-justify">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
@@ -243,7 +250,11 @@ const Dashboard = () => {
               perferendis velit, facere quam!
             </p>
           </div>
-          <div className="max-w-lg bg-white rounded-lg shadow-lg p-8" data-aos="fade-up" data-aos-duration="1500">
+          <div
+            className="max-w-lg bg-white rounded-lg shadow-lg p-8"
+            data-aos="fade-up"
+            data-aos-duration="1500"
+          >
             <h1 className="text-3xl font-pacifico font-light pb-6">
               Kontak Kami
             </h1>
@@ -290,22 +301,23 @@ const Dashboard = () => {
           </div>
           <div className="w-1/2 h-full flex justify-center p-20">
             <div className="flex flex-col justify-center">
-              <h1 className=" blink text-9xl font-bold font-poppins items-center justify-center flex flex-col ">
+              <h1 className="blink text-9xl font-bold font-poppins items-center justify-center flex flex-col">
                 BIG SALE
-                
-                <h1 className=" blink2 text-white">BIG SALE</h1>
+              </h1>
+              <h1 className="blink2 text-white text-9xl font-bold font-poppins items-center justify-center flex flex-col">
+                BIG SALE
               </h1>
               <p className="mt-4 text-gray-700 font-poppins text-justify">
                 Tampil Cantik dan Bersinar di Bulan Ini! Promo Khusus Diskon
                 Produk Perawatan Kulit hingga 50%
               </p>
               <div className="flex justify-center">
-              <button
-                onClick={() => scrollToSection("product")}
-                className=" z-10text-black font-poppins border hover:bg-amber-300 border-black bg-amber-200 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
-              >
-                Belanja Sekarang
-              </button>
+                <button
+                  onClick={() => scrollToSection("product")}
+                  className=" z-10text-black font-poppins border hover:bg-amber-300 border-black bg-amber-200 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
+                >
+                  Belanja Sekarang
+                </button>
               </div>
             </div>
           </div>
