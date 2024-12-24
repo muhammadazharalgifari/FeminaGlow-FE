@@ -14,19 +14,21 @@ import { Link as ScrollLink } from "react-scroll";
 import axiosInstance from "../../ax";
 import bgdashboard from "../assets/bgdashboard.jpg";
 import promo from "../assets/promo.png";
+import efek from "../assets/efek.png";
 import { useCart } from "./Cart";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import ProfileUserModal from "../component/ProfileUserModal";
 
 const Dashboard = () => {
   const { cartItems, totalPrice, updateQuantity, removeFromCart } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     AOS.init({
-      
-      easing: "ease-in-out", 
-      once: true, 
+      easing: "ease-in-out",
+      once: true,
     });
   }, []);
   const { data, isLoading, refetch } = useQuery({
@@ -44,6 +46,7 @@ const Dashboard = () => {
 
   return (
     <section className="w-full h-screen bg-white " id="home">
+      {/* <ProfileUserModal isOpen={showModal} onClose={() => setShowModal(false)} /> */}
       {/* Section 1: Hero Section */}
       <div
         className="w-full h-screen bg-cover bg-center relative"
@@ -145,16 +148,21 @@ const Dashboard = () => {
               </div>
             )}
 
-            <AiOutlineUser size={27} className="relative cursor-pointer" />
+            <AiOutlineUser
+              size={27}
+              className="relative cursor-pointer"
+              onClick={() => setShowModal(true)} // Open modal when clicked
+            />
           </div>
         </div>
 
         {/* Hero Content */}
-        <div className="w-full h-screen flex flex-col justify-center pl-[160px] pb-16 relative z-10 gap-6 max-w-3xl" data-aos="fade-up" data-aos-duration="1500">
-          <h1
-            
-            className="text-black font-poppins text-7xl font-bold select-none"
-          >
+        <div
+          className="w-full h-screen flex flex-col justify-center pl-[160px] pb-16 relative z-10 gap-6 max-w-3xl"
+          data-aos="fade-up"
+          data-aos-duration="1500"
+        >
+          <h1 className="text-black font-poppins text-7xl font-bold select-none">
             Selamat Datang
           </h1>
           <h2 className="text-black text-3xl font-poppins font-light select-none">
@@ -194,7 +202,9 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-36 font-poppins select-none">
               {data.map((category) => (
                 <div
-                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between" data-aos="zoom-in" data-aos-duration="1000"
+                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
+                  data-aos="zoom-in"
+                  data-aos-duration="1000"
                   key={category.id}
                 >
                   <h3 className="text-lg font-semibold mb-6 tracking-widest uppercase">
@@ -227,46 +237,90 @@ const Dashboard = () => {
       ;{/* Section 3: About Us */}
       <section
         id="about"
-        className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
+        className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg.jpg')]"
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="absolute inset-0 bg-black opacity-10"></div>
 
-        <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-6">
-          <div className="max-w-lg bg-white p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-duration="1500">
-            <h1 className="font-pacifico font-light text-3xl">Tentang Kami</h1>
-            <p className="font-poppins pt-6 text-justify">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
-              suscipit quae itaque possimus, ut quia dolor modi quod aliquam.
-              Vero maxime laudantium dolores voluptatem error odio, recusandae
-              quo perspiciatis rem sed, assumenda eaque illo commodi impedit
-              perferendis velit, facere quam!
-            </p>
+        <div className="w-full h-screen flex  items-center  pt-16 relative z-10 gap-6">
+          <div className="flex  flex-col gap-6  w-[900px] pl-[180px] justify-center h-full ">
+            <div
+              className="max-w-lg bg-white p-8 rounded-lg shadow-lg"
+              data-aos="fade-up"
+              data-aos-duration="1500"
+            >
+              <h1 className="font-pacifico font-light text-3xl">
+                Tentang Kami
+              </h1>
+              <p className="font-poppins pt-6 text-justify">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
+                suscipit quae itaque possimus, ut quia dolor modi quod aliquam.
+                Vero maxime laudantium dolores voluptatem error odio, recusandae
+                quo perspiciatis rem sed, assumenda eaque illo commodi impedit
+                perferendis velit, facere quam!
+              </p>
+            </div>
+            <div
+              className="max-w-lg bg-white rounded-lg shadow-lg p-8"
+              data-aos="fade-up"
+              data-aos-duration="1500"
+            >
+              <h1 className="text-3xl font-pacifico font-light pb-6">
+                Kontak Kami
+              </h1>
+              <div className="gap-4 flex flex-col">
+                <div className="flex items-center">
+                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
+                    <AiOutlineInstagram size={25} className="fill-pink-400" />
+                  </div>
+                  <h1 className="pl-4 font-poppins">Shineskin Skincare</h1>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
+                    <AiOutlineWhatsApp size={25} className="fill-green-500" />
+                  </div>
+                  <h1 className="pl-4 font-poppins">081356782980</h1>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
+                    <AiOutlineMail size={25} className="fill-red-500" />
+                  </div>
+                  <h1 className="pl-4 font-poppins">
+                    ShineskinSkincare@gmail.com
+                  </h1>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="max-w-lg bg-white rounded-lg shadow-lg p-8" data-aos="fade-up" data-aos-duration="1500">
-            <h1 className="text-3xl font-pacifico font-light pb-6">
-              Kontak Kami
-            </h1>
-            <div className="gap-4 flex flex-col">
-              <div className="flex items-center">
-                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                  <AiOutlineInstagram size={25} className="fill-pink-400" />
-                </div>
-                <h1 className="pl-4 font-poppins">Shineskin Skincare</h1>
-              </div>
-              <div className="flex items-center">
-                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                  <AiOutlineWhatsApp size={25} className="fill-green-500" />
-                </div>
-                <h1 className="pl-4 font-poppins">081356782980</h1>
-              </div>
-              <div className="flex items-center">
-                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                  <AiOutlineMail size={25} className="fill-red-500" />
-                </div>
-                <h1 className="pl-4 font-poppins">
-                  ShineskinSkincare@gmail.com
-                </h1>
+          <div className="w-[1000px] h-full">
+            <div data-aos="fade-down" data-aos-duration="1500">
+              <h1 className="font-pacifico text-4xl flex justify-center pt-14">
+                Galery Shineskin Skincare
+              </h1>
+            </div>
+            <div className=" ">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-16 ">
+                {[
+                  "https://img.freepik.com/free-photo/natural-products-arrangement-top-view_23-2148899417.jpg?t=st=1734761191~exp=1734764791~hmac=1bc6bc4a070928228fbaaf212355e4946dce0490dbb802b70641f28f3b62befb&w=740",
+                  "https://img.freepik.com/free-photo/natural-products-arrangement-flat-lay_23-2148899418.jpg?t=st=1734761235~exp=1734764835~hmac=d05f592cc6e7dc494d276bb74225e447d0036eb94557cb13e07bf7431c6fbf39&w=740",
+                  "https://img.freepik.com/free-photo/top-view-cream-container-flowers_23-2148899421.jpg?t=st=1734761296~exp=1734764896~hmac=b7ca63b61d1ae9f0042a37633d471534f71db4053c6b8930a40d5270e154f44a&w=1060",
+                  "https://img.freepik.com/premium-photo/natural-cream-plant-top-view_23-2148899404.jpg?w=1060",
+                  "https://img.freepik.com/free-photo/view-natural-ingredients-arrangement_23-2148899381.jpg?t=st=1734761553~exp=1734765153~hmac=c5de4b060736ea5de11a1c6fb5bbd6c726a9df03bc292aab7cf3fd3a28c02fda&w=1060",
+                  "https://img.freepik.com/free-photo/serum-bottle-salt-plant_23-2148899358.jpg?t=st=1734761601~exp=1734765201~hmac=a5f052b3e35b6b91e2ce366be7843437be6e2c322f5a25ceaecacd94d2f6087e&w=740",
+                ].map((src, index) => (
+                  <div
+                    key={index}
+                    className="overflow-hidden rounded-lg shadow-lg"
+                  >
+                    <img
+                      src={src}
+                      alt={`Shineskin product ${index + 1}`}
+                      className="object-cover w-80 h-64"
+                      data-aos="fade-up"
+                      data-aos-duration="1500"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -285,14 +339,13 @@ const Dashboard = () => {
             <img
               src={promo}
               alt="Promo Image"
-              className="w-full h-full object-cover object-bottom"
+              className="w-full h-full object-cover object-bottom "
             />
           </div>
           <div className="w-1/2 h-full flex justify-center p-20">
             <div className="flex flex-col justify-center">
               <h1 className=" blink text-9xl font-bold font-poppins items-center justify-center flex flex-col ">
                 BIG SALE
-                
                 <h1 className=" blink2 text-white">BIG SALE</h1>
               </h1>
               <p className="mt-4 text-gray-700 font-poppins text-justify">
@@ -300,12 +353,12 @@ const Dashboard = () => {
                 Produk Perawatan Kulit hingga 50%
               </p>
               <div className="flex justify-center">
-              <button
-                onClick={() => scrollToSection("product")}
-                className=" z-10text-black font-poppins border hover:bg-amber-300 border-black bg-amber-200 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
-              >
-                Belanja Sekarang
-              </button>
+                <button
+                  onClick={() => scrollToSection("product")}
+                  className=" z-10text-black font-poppins border hover:bg-slate-700 border-black bg-slate-400 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
+                >
+                  Belanja Sekarang
+                </button>
               </div>
             </div>
           </div>
@@ -314,7 +367,7 @@ const Dashboard = () => {
       {/* Footer */}
       <section
         id="footer"
-        className="w-full h-[30px] bg-white text-black flex justify-center items-center"
+        className="w-full h-[30px] bg-black text-white flex justify-center items-center"
       >
         <h1 className="font-poppins">Copyright © 2025 Shineskin Skincare</h1>
       </section>

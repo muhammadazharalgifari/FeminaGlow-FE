@@ -22,6 +22,10 @@ const BreadcrumbComponent = () => {
     {
       title: <Link to="/admin/category">Category</Link>,
       link: "/admin/category",
+    },
+    {
+      title: <Link to="/admin/order">Order</Link>,
+      link: "/admin/order",
     }
   ];
 

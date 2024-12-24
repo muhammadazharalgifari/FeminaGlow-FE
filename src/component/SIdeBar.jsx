@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Menu } from "antd";
-import { DashboardOutlined, AppstoreAddOutlined } from "@ant-design/icons";
+import { DashboardOutlined, AppstoreAddOutlined, UserOutlined, ShoppingCartOutlined, ShoppingFilled, ShoppingOutlined, PercentageOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 const Sider = () => {
@@ -15,7 +15,8 @@ const Sider = () => {
     {
       key: "/admin/user",
       label: "User",
-      icon: <AppstoreAddOutlined />,
+      icon: <UserOutlined/>,
+    
     },
     {
       key:"/admin/category",
@@ -26,8 +27,18 @@ const Sider = () => {
     {
       key: "/admin/products",
       label: "Products",
-      icon: <AppstoreAddOutlined />,
+      icon: <ShoppingOutlined/>,
     },
+    {
+      key: "/admin/order",
+      label: "Order",
+      icon: <ShoppingCartOutlined />,
+    },
+    {
+      key: "/admin/promo",
+      label: "Promo",
+      icon: <PercentageOutlined/>,
+    }
   ];
 
   return (

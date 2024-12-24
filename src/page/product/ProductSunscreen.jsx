@@ -4,18 +4,20 @@ import axiosInstance from "../../../ax";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../Cart";
 import { TiShoppingCart } from "react-icons/ti";
+import { Alert } from "antd";  // Import Alert from Ant Design
 
 const AllProduct = () => {
   const { categoryId } = useParams();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState({});
+  const [alertVisible, setAlertVisible] = useState(false); // State for controlling alert visibility
+  const [alertMessage, setAlertMessage] = useState(""); // State for the alert message
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["getProductByCategory", categoryId],
     queryFn: async () => {
       try {
         const result = await axiosInstance.get(`/api/${categoryId}/products`);
-        // console.log(result.data.data);
         return result.data.data;
       } catch (error) {
         console.log(error);
@@ -33,8 +35,20 @@ const AllProduct = () => {
     }
   };
 
+  const handleAddToCart = (product) => {
+    const qty = quantity[product.id] || 1;
+    addToCart(product, qty);
+    setAlertMessage(`Product Berhasil Ditambahkan`);
+    setAlertVisible(true);
+    
+    // Hide the alert after 3 seconds
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 3000);
+  };
+
   return (
-    <div className="bg-gray-300 min-h-screen font-poppins bg-[url('/src/assets/bg.jpg')]">
+    <div className="bg-gray-300 min-h-screen font-poppins bg-cover bg-[url('/src/assets/bg.jpg')]">
       {/* Breadcrumb */}
       <nav className="text-gray-500 text-sm pt-4 px-10">
         <Link to="/dashboard" className="hover:text-gray-800">
@@ -52,8 +66,22 @@ const AllProduct = () => {
 
       <div className="py-6 text-center">
         <h1 className="font-pacifico text-3xl mb-4">Produk Kami</h1>
-        <p className="font-poppins text-lg tracking-wider">Pilih produk yang anda inginkan dan tambahkan ke keranjang</p>
+        <p className="font-poppins text-lg tracking-wider">
+          Pilih produk yang anda inginkan dan tambahkan ke keranjang
+        </p>
       </div>
+
+      {/* Alert for Add to Cart */}
+    
+      {alertVisible && (
+        <Alert
+          message={alertMessage}
+          type="success"
+          showIcon
+          closable
+          className="absolute  right-4 z-50 top-4 "
+        />
+      )}
 
       {/* Daftar Product */}
       {isLoading ? (
@@ -92,10 +120,7 @@ const AllProduct = () => {
                     </p>
 
                     <div className="flex items-center space-x-4 mb-4">
-                      <label
-                        htmlFor="quantity"
-                        className="font-semibold"
-                      >
+                      <label htmlFor="quantity" className="font-semibold">
                         Qty :
                       </label>
                       <input
@@ -108,10 +133,7 @@ const AllProduct = () => {
 
                     <button
                       className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 cursor-pointer"
-                      onClick={() => {
-                        addToCart(product, quantity[product.id] || 1);
-                        alert("Product berhasil ditambahkan ke keranjang");
-                      }}
+                      onClick={() => handleAddToCart(product)}
                     >
                       <TiShoppingCart className="text-2xl" />
                       <p>Add to Cart</p>

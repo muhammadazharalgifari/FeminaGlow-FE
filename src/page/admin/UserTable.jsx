@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Table, Spin, Image } from "antd";
+import {
+  Layout,
+  Table,
+  Spin,
+  Image,
+  notification,
+  Modal,
+  Form,
+  Input,
+  Button,
+} from "antd"; // Import Modal, Form, Input, Button
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sider from "../../component/SIdeBar";
@@ -11,6 +21,9 @@ const UserTable = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editModalVisible, setEditModalVisible] = useState(false); // State to control the modal visibility
+  const [selectedUser, setSelectedUser] = useState(null); // State to store the selected user for editing
+  const [form] = Form.useForm(); // Ant Design Form hook
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +46,7 @@ const UserTable = () => {
       });
   }, [navigate]);
 
-  // Handle Delete User Ni Brok
+  // Handle Delete User
   const handleDelete = (userId) => {
     const token = localStorage.getItem("token");
     axios
@@ -41,20 +54,73 @@ const UserTable = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        // Menghapus data dari state setelah berhasil dihapus
+        // Remove the deleted user from the state
         setUserData(userData.filter((user) => user.id !== userId));
+
+        // Show success notification
+        notification.success({
+          message: "User Deleted",
+          description: "The user has been successfully deleted.",
+          placement: "topRight",
+        });
       })
       .catch((error) => {
         console.error("Error deleting user:", error);
+
+        // Show error notification
+        notification.error({
+          message: "Error",
+          description: "There was an error deleting the user.",
+          placement: "topRight",
+        });
       });
   };
 
-  // Handle Edit User Ni Brok
+  // Handle Edit User: Show the modal and pre-fill the form
   const handleEdit = (userId) => {
-    navigate(`/admin/edit/user/${userId}`);
+    const user = userData.find((user) => user.id === userId);
+    setSelectedUser(user);
+    form.setFieldsValue({
+      username: user.username,
+      email: user.email,
+      
+    });
+    setEditModalVisible(true); // Open the modal
   };
 
-  // Kolom Untuk Tabel Ni Brok
+  // Handle Form Submission (Edit User)
+  const handleFormSubmit = (values) => {
+    const token = localStorage.getItem("token");
+    axios;
+    axios
+      .put(`http://localhost:3888/api/users/${selectedUser.id}`, values, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        // Update user data in state
+        setUserData(
+          userData.map((user) =>
+            user.id === selectedUser.id ? { ...user, ...values } : user
+          )
+        );
+        setEditModalVisible(false); // Close the modal
+        notification.success({
+          message: "User Updated",
+          description: "The user has been successfully updated.",
+          placement: "topRight",
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating user:", error);
+        notification.error({
+          message: "Error",
+          description: "There was an error updating the user.",
+          placement: "topRight",
+        });
+      });
+  };
+
+  // Kolom untuk Tabel
   const columns = [
     {
       title: "ID",
@@ -93,7 +159,7 @@ const UserTable = () => {
       title: "Action",
       key: "action",
       render: (text, record) => (
-        <div className=" flex gap-1">
+        <div className="flex gap-1">
           <button
             style={{
               backgroundColor: "blue",
@@ -109,7 +175,6 @@ const UserTable = () => {
             Edit
           </button>
 
-          {/* Button Delete Ni Brok */}
           <button
             style={{
               backgroundColor: "red",
@@ -141,9 +206,8 @@ const UserTable = () => {
             minHeight: 280,
           }}
         >
-          <BreadcrumbComponent/>
+          <BreadcrumbComponent />
           <div>
-            
             {loading ? (
               <Spin size="large" />
             ) : (
@@ -157,6 +221,45 @@ const UserTable = () => {
           </div>
         </Content>
       </Layout>
+
+      {/* Edit User Modal */}
+      <Modal
+        title="Edit User"
+        visible={editModalVisible}
+        onCancel={() => setEditModalVisible(false)}
+        footer={null} // We'll handle the form submission in the modal
+      >
+        <Form
+          form={form}
+          onFinish={handleFormSubmit}
+          initialValues={{
+            username: selectedUser?.username,
+            email: selectedUser?.email,
+           
+          }}
+        >
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please input the username!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input the email!" }]}
+          >
+            <Input />
+          </Form.Item>
+         
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+              Update User
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </Layout>
   );
 };
