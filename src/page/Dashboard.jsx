@@ -21,16 +21,18 @@ import "aos/dist/aos.css";
 import ProfileUserModal from "../component/ProfileUserModal";
 
 const Dashboard = () => {
-  const { cartItems, totalPrice, updateQuantity, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     AOS.init({
-      easing: "ease-in-out",
-      once: true,
+      
+      easing: "ease-in-out", 
+      once: true, 
     });
   }, []);
+
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["getAllCategories"],
     queryFn: async () => {
@@ -104,7 +106,7 @@ const Dashboard = () => {
                   ✕
                 </button>
 
-                {cartItems.map((item) => (
+                {cartItems?.map((item) => (
                   <div
                     key={item.id}
                     className="flex justify-between items-center border-b pb-4 gap-4"
@@ -199,7 +201,7 @@ const Dashboard = () => {
           {isLoading ? (
             <p className="text-lg">Loading...</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-36 font-poppins select-none">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36 font-poppins select-none">
               {data.map((category) => (
                 <div
                   className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
@@ -217,13 +219,13 @@ const Dashboard = () => {
                       className="w-full h-60 object-contain rounded-lg"
                     />
                   </div>
-                  <p className="text-gray-700 text-justify text-sm min-h-[4rem] pt-6 line-clamp-3">
+                  <p className="text-gray-700 text-justify text-sm min-h-[4rem] pt-6">
                     {category.description}
                   </p>
 
                   <Link
                     to={`/product/${category.id}`}
-                    className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 transition-all duration-500 text-white rounded-lg mt-4 h-12 shadow-lg gap-2 font-semibold"
+                    className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 transition-all duration-500 text-white rounded-lg mt-8 h-12 shadow-lg gap-2 font-semibold"
                   >
                     <IoArrowRedo className="text-xl" />
                     Lihat Produk
@@ -242,85 +244,49 @@ const Dashboard = () => {
         {/* Overlay */}
         <div className="absolute inset-0 bg-black opacity-10"></div>
 
-        <div className="w-full h-screen flex  items-center  pt-16 relative z-10 gap-6">
-          <div className="flex  flex-col gap-6  w-[900px] pl-[180px] justify-center h-full ">
-            <div
-              className="max-w-lg bg-white p-8 rounded-lg shadow-lg"
-              data-aos="fade-up"
-              data-aos-duration="1500"
-            >
-              <h1 className="font-pacifico font-light text-3xl">
-                Tentang Kami
-              </h1>
-              <p className="font-poppins pt-6 text-justify">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
-                suscipit quae itaque possimus, ut quia dolor modi quod aliquam.
-                Vero maxime laudantium dolores voluptatem error odio, recusandae
-                quo perspiciatis rem sed, assumenda eaque illo commodi impedit
-                perferendis velit, facere quam!
-              </p>
-            </div>
-            <div
-              className="max-w-lg bg-white rounded-lg shadow-lg p-8"
-              data-aos="fade-up"
-              data-aos-duration="1500"
-            >
-              <h1 className="text-3xl font-pacifico font-light pb-6">
-                Kontak Kami
-              </h1>
-              <div className="gap-4 flex flex-col">
-                <div className="flex items-center">
-                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                    <AiOutlineInstagram size={25} className="fill-pink-400" />
-                  </div>
-                  <h1 className="pl-4 font-poppins">Shineskin Skincare</h1>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                    <AiOutlineWhatsApp size={25} className="fill-green-500" />
-                  </div>
-                  <h1 className="pl-4 font-poppins">081356782980</h1>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                    <AiOutlineMail size={25} className="fill-red-500" />
-                  </div>
-                  <h1 className="pl-4 font-poppins">
-                    ShineskinSkincare@gmail.com
-                  </h1>
-                </div>
-              </div>
-            </div>
+        <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-6">
+          <div
+            className="max-w-lg bg-white p-8 rounded-lg shadow-lg"
+            data-aos="fade-up"
+            data-aos-duration="1500"
+          >
+            <h1 className="font-pacifico font-light text-3xl">Tentang Kami</h1>
+            <p className="font-poppins pt-6 text-justify">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
+              suscipit quae itaque possimus, ut quia dolor modi quod aliquam.
+              Vero maxime laudantium dolores voluptatem error odio, recusandae
+              quo perspiciatis rem sed, assumenda eaque illo commodi impedit
+              perferendis velit, facere quam!
+            </p>
           </div>
-          <div className="w-[1000px] h-full">
-            <div data-aos="fade-down" data-aos-duration="1500">
-              <h1 className="font-pacifico text-4xl flex justify-center pt-14">
-                Galery Shineskin Skincare
-              </h1>
-            </div>
-            <div className=" ">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-16 ">
-                {[
-                  "https://img.freepik.com/free-photo/natural-products-arrangement-top-view_23-2148899417.jpg?t=st=1734761191~exp=1734764791~hmac=1bc6bc4a070928228fbaaf212355e4946dce0490dbb802b70641f28f3b62befb&w=740",
-                  "https://img.freepik.com/free-photo/natural-products-arrangement-flat-lay_23-2148899418.jpg?t=st=1734761235~exp=1734764835~hmac=d05f592cc6e7dc494d276bb74225e447d0036eb94557cb13e07bf7431c6fbf39&w=740",
-                  "https://img.freepik.com/free-photo/top-view-cream-container-flowers_23-2148899421.jpg?t=st=1734761296~exp=1734764896~hmac=b7ca63b61d1ae9f0042a37633d471534f71db4053c6b8930a40d5270e154f44a&w=1060",
-                  "https://img.freepik.com/premium-photo/natural-cream-plant-top-view_23-2148899404.jpg?w=1060",
-                  "https://img.freepik.com/free-photo/view-natural-ingredients-arrangement_23-2148899381.jpg?t=st=1734761553~exp=1734765153~hmac=c5de4b060736ea5de11a1c6fb5bbd6c726a9df03bc292aab7cf3fd3a28c02fda&w=1060",
-                  "https://img.freepik.com/free-photo/serum-bottle-salt-plant_23-2148899358.jpg?t=st=1734761601~exp=1734765201~hmac=a5f052b3e35b6b91e2ce366be7843437be6e2c322f5a25ceaecacd94d2f6087e&w=740",
-                ].map((src, index) => (
-                  <div
-                    key={index}
-                    className="overflow-hidden rounded-lg shadow-lg"
-                  >
-                    <img
-                      src={src}
-                      alt={`Shineskin product ${index + 1}`}
-                      className="object-cover w-80 h-64"
-                      data-aos="fade-up"
-                      data-aos-duration="1500"
-                    />
-                  </div>
-                ))}
+          <div
+            className="max-w-lg bg-white rounded-lg shadow-lg p-8"
+            data-aos="fade-up"
+            data-aos-duration="1500"
+          >
+            <h1 className="text-3xl font-pacifico font-light pb-6">
+              Kontak Kami
+            </h1>
+            <div className="gap-4 flex flex-col">
+              <div className="flex items-center">
+                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
+                  <AiOutlineInstagram size={25} className="fill-pink-400" />
+                </div>
+                <h1 className="pl-4 font-poppins">Shineskin Skincare</h1>
+              </div>
+              <div className="flex items-center">
+                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
+                  <AiOutlineWhatsApp size={25} className="fill-green-500" />
+                </div>
+                <h1 className="pl-4 font-poppins">081356782980</h1>
+              </div>
+              <div className="flex items-center">
+                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
+                  <AiOutlineMail size={25} className="fill-red-500" />
+                </div>
+                <h1 className="pl-4 font-poppins">
+                  ShineskinSkincare@gmail.com
+                </h1>
               </div>
             </div>
           </div>
@@ -344,9 +310,11 @@ const Dashboard = () => {
           </div>
           <div className="w-1/2 h-full flex justify-center p-20">
             <div className="flex flex-col justify-center">
-              <h1 className=" blink text-9xl font-bold font-poppins items-center justify-center flex flex-col ">
+              <h1 className="blink text-9xl font-bold font-poppins items-center justify-center flex flex-col">
                 BIG SALE
-                <h1 className=" blink2 text-white">BIG SALE</h1>
+              </h1>
+              <h1 className="blink2 text-white text-9xl font-bold font-poppins items-center justify-center flex flex-col">
+                BIG SALE
               </h1>
               <p className="mt-4 text-gray-700 font-poppins text-justify">
                 Tampil Cantik dan Bersinar di Bulan Ini! Promo Khusus Diskon
@@ -355,7 +323,7 @@ const Dashboard = () => {
               <div className="flex justify-center">
                 <button
                   onClick={() => scrollToSection("product")}
-                  className=" z-10text-black font-poppins border hover:bg-slate-700 border-black bg-slate-400 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
+                  className=" z-10text-black font-poppins border hover:bg-amber-300 border-black bg-amber-200 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
                 >
                   Belanja Sekarang
                 </button>

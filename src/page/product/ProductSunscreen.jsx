@@ -50,8 +50,8 @@ const AllProduct = () => {
   return (
     <div className="bg-gray-300 min-h-screen font-poppins bg-cover bg-[url('/src/assets/bg.jpg')]">
       {/* Breadcrumb */}
-      <nav className="text-gray-500 text-sm pt-4 px-10">
-        <Link to="/dashboard" className="hover:text-gray-800">
+      <nav className="text-sm pt-4 px-10">
+        <Link to="/dashboard" className="hover:text-gray-600">
           Home
         </Link>
         <span className="mx-2">/</span>
