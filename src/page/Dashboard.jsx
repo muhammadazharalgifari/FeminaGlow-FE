@@ -19,7 +19,13 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 const Dashboard = () => {
-  const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
+  const {
+    cartItems,
+    removeFromCart,
+    updateQuantity,
+    grandTotalPrice,
+    refetchCart,
+  } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
 
   useEffect(() => {
@@ -41,6 +47,18 @@ const Dashboard = () => {
       }
     },
   });
+
+  const handleMinusQuantity = async (itemId, currentQuantity) => {
+    if (currentQuantity > 1) {
+      await updateQuantity(itemId, currentQuantity - 1);
+      refetchCart();
+    }
+  };
+
+  const handlePlusQuantity = async (itemId, currentQuantity) => {
+    await updateQuantity(itemId, currentQuantity + 1);
+    refetchCart();
+  };
 
   return (
     <section className="w-full h-screen bg-white " id="home">
@@ -101,43 +119,51 @@ const Dashboard = () => {
                   ✕
                 </button>
 
-                {cartItems?.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex justify-between items-center border-b pb-4 gap-4"
-                  >
-                    <p className="flex-shrink-0 w-1/4">{item.name}</p>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => {
-                          if (item.quantity > 1) {
-                            updateQuantity(item.id, item.quantity - 1);
+                {cartItems.length === 0 ? (
+                  <p className="text-center">Keranjang Anda kosong</p>
+                ) : (
+                  cartItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center border-b pb-4 gap-4"
+                    >
+                      <p className="flex-shrink-0 w-1/4">{item.product_name}</p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            handleMinusQuantity(item.id, item.quantity)
                           }
-                        }}
-                        className="bg-red-500 text-white px-2 rounded-lg shadow-lg"
-                      >
-                        -
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
-                        }
-                        className="bg-green-500 text-white px-2 rounded-lg shadow-lg"
-                      >
-                        +
+                          className="bg-red-500 text-white px-2 rounded-lg shadow-lg"
+                        >
+                          -
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button
+                          onClick={() =>
+                            handlePlusQuantity(item.id, item.quantity)
+                          }
+                          className="bg-green-500 text-white px-2 rounded-lg shadow-lg"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <span className="flex-shrink-0 w-1/5">
+                        IDR{" "}
+                        {Number(item.subtotal_price).toLocaleString("id-ID", {
+                          style: "decimal",
+                        })}
+                      </span>
+                      <button onClick={() => removeFromCart(item.id)}>
+                        <RiDeleteBin5Line className="text-red-500 text-xl shadow-lg rounded-lg" />
                       </button>
                     </div>
-                    <span className="flex-shrink-0 w-1/5">
-                      IDR {(item.price * item.quantity).toLocaleString("id-ID")}
-                    </span>
-                    <button onClick={() => removeFromCart(item.id)}>
-                      <RiDeleteBin5Line className="text-red-500 text-xl shadow-lg rounded-lg" />
-                    </button>
-                  </div>
-                ))}
+                  ))
+                )}
                 <h3 className="text-lg font-semibold mt-4">
-                  Total : IDR {totalPrice.toLocaleString("id-ID")}
+                  Total : IDR{" "}
+                  {Number(grandTotalPrice).toLocaleString("id-ID", {
+                    style: "decimal",
+                  })}
                 </h3>
                 <button className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
                   Check Out
@@ -175,6 +201,7 @@ const Dashboard = () => {
           </ScrollLink>
         </div>
       </div>
+
       {/* Section 2: Kategori Produk */}
       <section
         id="product"
@@ -227,7 +254,8 @@ const Dashboard = () => {
           )}
         </div>
       </section>
-      ;{/* Section 3: About Us */}
+
+      {/* Section 3: About Us */}
       <section
         id="about"
         className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
