@@ -4,27 +4,29 @@ import axiosInstance from "../../../ax";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../Cart";
 import { TiShoppingCart } from "react-icons/ti";
-import { Alert } from "antd";  // Import Alert from Ant Design
+import { Alert } from "antd"; // Import Alert dari Ant Design
 
 const AllProduct = () => {
   const { categoryId } = useParams();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState({});
-  const [alertVisible, setAlertVisible] = useState(false); // State for controlling alert visibility
-  const [alertMessage, setAlertMessage] = useState(""); // State for the alert message
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  // Fetch data produk berdasarkan kategori
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["getProductByCategory", categoryId],
     queryFn: async () => {
       try {
         const result = await axiosInstance.get(`/api/${categoryId}/products`);
         return result.data.data;
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching products:", error);
       }
     },
   });
 
+  // Fungsi untuk mengatur jumlah produk
   const handleQuantityChange = (e, productId) => {
     const value = e.target.value;
     if (value >= 1) {
@@ -35,16 +37,38 @@ const AllProduct = () => {
     }
   };
 
-  const handleAddToCart = (product) => {
+  // Fungsi untuk menambahkan produk ke keranjang
+  const handleAddToCart = async (product) => {
     const qty = quantity[product.id] || 1;
-    addToCart(product, qty);
-    setAlertMessage(`Product Berhasil Ditambahkan`);
-    setAlertVisible(true);
-    
-    // Hide the alert after 3 seconds
-    setTimeout(() => {
-      setAlertVisible(false);
-    }, 3000);
+
+    try {
+      console.log("Sending to API:", {
+        product_id: product.id,
+
+        quantity: qty,
+      });
+
+      await addToCart(product.id, qty);
+
+      setAlertMessage(
+        `Produk "${product.name}" berhasil ditambahkan ke keranjang.`
+      );
+      setAlertVisible(true);
+
+      // Sembunyikan alert setelah 3 detik
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      setAlertMessage("Gagal menambahkan produk ke keranjang.");
+      setAlertVisible(true);
+
+      // Sembunyikan alert setelah 3 detik
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+    }
   };
 
   return (
@@ -71,19 +95,18 @@ const AllProduct = () => {
         </p>
       </div>
 
-      {/* Alert for Add to Cart */}
-    
+      {/* Alert untuk Add to Cart */}
       {alertVisible && (
         <Alert
           message={alertMessage}
           type="success"
           showIcon
           closable
-          className="absolute  right-4 z-50 top-4 "
+          className="absolute right-4 z-50 top-4"
         />
       )}
 
-      {/* Daftar Product */}
+      {/* Daftar Produk */}
       {isLoading ? (
         <p className="text-lg">Loading...</p>
       ) : (

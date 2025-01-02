@@ -14,26 +14,26 @@ import { Link as ScrollLink } from "react-scroll";
 import axiosInstance from "../../ax";
 import bgdashboard from "../assets/bgdashboard.jpg";
 import promo from "../assets/promo.png";
-import efek from "../assets/efek.png";
 import { useCart } from "./Cart";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import ProfileUserModal from "../component/ProfileUserModal";
 
 const Dashboard = () => {
   const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
-  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     AOS.init({
-      
-      easing: "ease-in-out", 
-      once: true, 
+      easing: "ease-in-out",
+      once: true,
     });
   }, []);
 
-  const { data, isLoading, refetch } = useQuery({
+  const {
+    data: categories,
+    isLoading: categoriesLoading,
+    refetch: refetchCategories,
+  } = useQuery({
     queryKey: ["getAllCategories"],
     queryFn: async () => {
       try {
@@ -46,9 +46,27 @@ const Dashboard = () => {
     },
   });
 
+  // Fetch cart items
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    refetch: refetchCartItem,
+  } = useQuery({
+    queryKey: ["getAllCart"],
+    queryFn: async () => {
+      try {
+        const result = await axiosInstance.get("/api/cart-items");
+        console.log(result.data);
+        return result.data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+  });
+
   return (
     <section className="w-full h-screen bg-white " id="home">
-      {/* <ProfileUserModal isOpen={showModal} onClose={() => setShowModal(false)} /> */}
       {/* Section 1: Hero Section */}
       <div
         className="w-full h-screen bg-cover bg-center relative"
@@ -106,43 +124,50 @@ const Dashboard = () => {
                   ✕
                 </button>
 
-                {cartItems?.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex justify-between items-center border-b pb-4 gap-4"
-                  >
-                    <p className="flex-shrink-0 w-1/4">{item.name}</p>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => {
-                          if (item.quantity > 1) {
-                            updateQuantity(item.id, item.quantity - 1);
+                {Array.isArray(cartData.data) &&
+                  cartData.data.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center border-b pb-4 gap-4"
+                    >
+                      <p className="flex-shrink-0 w-1/4">{item.product_name}</p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            if (item.quantity > 1) {
+                              updateQuantity(item.id, item.quantity - 1);
+                            }
+                          }}
+                          className="bg-red-500 text-white px-2 rounded-lg shadow-lg"
+                        >
+                          -
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity + 1)
                           }
-                        }}
-                        className="bg-red-500 text-white px-2 rounded-lg shadow-lg"
-                      >
-                        -
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
-                        }
-                        className="bg-green-500 text-white px-2 rounded-lg shadow-lg"
-                      >
-                        +
+                          className="bg-green-500 text-white px-2 rounded-lg shadow-lg"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <span className="flex-shrink-0 w-1/5">
+                        IDR{" "}
+                        {parseInt(item.subtotal_price).toLocaleString("id-ID")}
+                      </span>
+                      <button onClick={() => removeFromCart(item.id)}>
+                        <RiDeleteBin5Line className="text-red-500 text-xl shadow-lg rounded-lg" />
                       </button>
                     </div>
-                    <span className="flex-shrink-0 w-1/5">
-                      IDR {(item.price * item.quantity).toLocaleString("id-ID")}
-                    </span>
-                    <button onClick={() => removeFromCart(item.id)}>
-                      <RiDeleteBin5Line className="text-red-500 text-xl shadow-lg rounded-lg" />
-                    </button>
-                  </div>
-                ))}
+                  ))}
+
                 <h3 className="text-lg font-semibold mt-4">
-                  Total : IDR {totalPrice.toLocaleString("id-ID")}
+                  Total : IDR{" "}
+                  {cartData?.total_price
+                    ? parseInt(cartData.total_price).toLocaleString("id-ID")
+                    : 0}
+                  {/* Total : IDR {(cartData.total_price).toLocaleString("id-ID")} */}
                 </h3>
                 <button className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
                   Check Out
@@ -150,11 +175,7 @@ const Dashboard = () => {
               </div>
             )}
 
-            <AiOutlineUser
-              size={27}
-              className="relative cursor-pointer"
-              onClick={() => setShowModal(true)} // Open modal when clicked
-            />
+            <AiOutlineUser size={27} className="relative cursor-pointer" />
           </div>
         </div>
 
@@ -198,11 +219,11 @@ const Dashboard = () => {
             Temukan produk-produk terbaik kami untuk perawatan kulit Anda!
           </p>
 
-          {isLoading ? (
+          {categoriesLoading ? (
             <p className="text-lg">Loading...</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36 font-poppins select-none">
-              {data.map((category) => (
+              {categories.map((category) => (
                 <div
                   className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
                   data-aos="zoom-in"
@@ -239,10 +260,10 @@ const Dashboard = () => {
       ;{/* Section 3: About Us */}
       <section
         id="about"
-        className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg.jpg')]"
+        className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black opacity-10"></div>
+        <div className="absolute inset-0 bg-black opacity-20"></div>
 
         <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-6">
           <div
@@ -305,7 +326,7 @@ const Dashboard = () => {
             <img
               src={promo}
               alt="Promo Image"
-              className="w-full h-full object-cover object-bottom "
+              className="w-full h-full object-cover object-bottom"
             />
           </div>
           <div className="w-1/2 h-full flex justify-center p-20">
@@ -335,7 +356,7 @@ const Dashboard = () => {
       {/* Footer */}
       <section
         id="footer"
-        className="w-full h-[30px] bg-black text-white flex justify-center items-center"
+        className="w-full h-[30px] bg-white text-black flex justify-center items-center"
       >
         <h1 className="font-poppins">Copyright © 2025 Shineskin Skincare</h1>
       </section>

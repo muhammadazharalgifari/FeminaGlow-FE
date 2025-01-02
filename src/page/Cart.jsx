@@ -29,15 +29,17 @@ const Cart = ({ children }) => {
   // Menambahkan produk ke keranjang
   const addToCart = async (product, quantity) => {
     try {
-      const response = await axiosInstance.post(
-        `/api/cart-item/${product.id}`,
-        {
-          quantity,
-        }
-      );
-      setCartItems((prev) => [...prev, response.data.data]);
+      const response = await axiosInstance.post(`/api/cart-item`, {
+        product_id: product.id,
+        quantity: quantity,
+      });
+      return response.data;
     } catch (error) {
-      console.log(error);
+      console.error(
+        "Error in addToCart API:",
+        error.response?.data || error.message
+      );
+      throw error;
     }
   };
 
