@@ -1,107 +1,78 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { createContext, useContext } from "react";
 import axiosInstance from "../../ax";
 
 const CartContext = createContext();
 
 const useCart = () => useContext(CartContext);
 
+const fetchCartItems = async () => {
+  const response = await axiosInstance.get("/api/cart-items");
+  const { data, total_price } = response.data;
+  // console.log(response.data);
+  return { items: data, totalPrice: total_price };
+};
+
 const Cart = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {
+    data: { items: cartItems = [], totalPrice = 0 } = {},
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["cartItems"],
+    queryFn: fetchCartItems,
+    initialData: { items: [], totalPrice: 0 },
+  });
 
-  // Mengambil data keranjang
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosInstance.get("/api/cart-items");
-        if (Array.isArray(response.data)) {
-          setCartItems(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchCartItems();
-  }, []);
-
-  // Menambahkan produk ke keranjang
-  const addToCart = async (product, quantity) => {
-    try {
-      const response = await axiosInstance.post(`/api/cart-item`, {
-        product_id: product.id,
-        quantity: quantity,
+  const addToCartMutation = useMutation({
+    mutationFn: async ({ productId, quantity }) => {
+      const response = await axiosInstance.post(`/api/cart-item/${productId}`, {
+        quantity,
       });
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Error in addToCart API:",
-        error.response?.data || error.message
-      );
-      throw error;
-    }
-  };
+      // console.log(response.data.data);
+      return response.data.data;
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
-  // Menghapus produk dari keranjang
-  const removeFromCart = async (id) => {
-    try {
+  const removefromCartMutation = useMutation({
+    mutationFn: async (id) => {
       await axiosInstance.delete(`/api/delete/cartItem/${id}`);
-      setCartItems((prev) => prev.filter((item) => item.id !== id));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
-  const updateQuantity = async (id, quantity) => {
-    try {
+  const updateQuantityMutation = useMutation({
+    mutationFn: async ({ id, quantity }) => {
+      if (quantity < 1) throw new Error("Quantity tidak boleh kurang dari 1");
       const response = await axiosInstance.put(`/api/update/cartItem/${id}`, {
         quantity,
       });
-      setCartItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, quantity: response.data.quantity } : item
-        )
-      );
-    } catch (error) {
-      console.log(error);
-    }
+      // console.log(response.data);
+      return response.data;
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const addToCart = (productId, quantity) => {
+    addToCartMutation.mutate({ productId, quantity });
   };
 
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.subtotal_price,
-    0
-  );
-  // const addToCart = (product, quantity) => {
-  //   setCartItems((prev) => {
-  //     const existingProduct = prev.find((item) => item.id === product.id);
-  //     if (existingProduct) {
-  //       return prev.map((item) =>
-  //         item.id === product.id
-  //           ? { ...item, quantity: item.quantity + quantity }
-  //           : item
-  //       );
-  //     }
-  //     return [...prev, { ...product, quantity }];
-  //   });
-  // };
+  const removeFromCart = (id) => {
+    removefromCartMutation.mutate(id);
+  };
 
-  // const removeFromCart = (id) => {
-  //   setCartItems((prev) => prev.filter((item) => item.id !== id));
-  // };
+  const updateQuantity = (id, quantity) => {
+    updateQuantityMutation.mutate({ id, quantity });
+  };
 
-  // const updateQuantity = (id, quantity) => {
-  //   setCartItems((prev) =>
-  //     prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-  //   );
-  // };
-
-  // const clearCart = () => setCartItems([]);
-
-  // const totalPrice = cartItems.reduce(
-  //   (total, item) => total + item.price * item.quantity,
-  //   0
-  // );
+  const grandTotalPrice = totalPrice;
 
   return (
     <CartContext.Provider
@@ -110,8 +81,9 @@ const Cart = ({ children }) => {
         addToCart,
         removeFromCart,
         updateQuantity,
-        totalPrice,
-        loading,
+        grandTotalPrice,
+        loading: isLoading,
+        refetchCart: refetch,
       }}
     >
       {children}

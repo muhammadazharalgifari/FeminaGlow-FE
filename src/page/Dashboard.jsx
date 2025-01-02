@@ -19,7 +19,13 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 const Dashboard = () => {
-  const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
+  const {
+    cartItems,
+    removeFromCart,
+    updateQuantity,
+    grandTotalPrice,
+    refetchCart,
+  } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
 
   useEffect(() => {
@@ -46,24 +52,17 @@ const Dashboard = () => {
     },
   });
 
-  // Fetch cart items
-  const {
-    data: cartData,
-    isLoading: cartLoading,
-    refetch: refetchCartItem,
-  } = useQuery({
-    queryKey: ["getAllCart"],
-    queryFn: async () => {
-      try {
-        const result = await axiosInstance.get("/api/cart-items");
-        console.log(result.data);
-        return result.data;
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
-    },
-  });
+  const handleMinusQuantity = async (itemId, currentQuantity) => {
+    if (currentQuantity > 1) {
+      await updateQuantity(itemId, currentQuantity - 1);
+      refetchCart();
+    }
+  };
+
+  const handlePlusQuantity = async (itemId, currentQuantity) => {
+    await updateQuantity(itemId, currentQuantity + 1);
+    refetchCart();
+  };
 
   return (
     <section className="w-full h-screen bg-white " id="home">
@@ -124,8 +123,10 @@ const Dashboard = () => {
                   ✕
                 </button>
 
-                {Array.isArray(cartData.data) &&
-                  cartData.data.map((item) => (
+                {cartItems.length === 0 ? (
+                  <p className="text-center">Keranjang Anda kosong</p>
+                ) : (
+                  cartItems.map((item) => (
                     <div
                       key={item.id}
                       className="flex justify-between items-center border-b pb-4 gap-4"
@@ -133,11 +134,9 @@ const Dashboard = () => {
                       <p className="flex-shrink-0 w-1/4">{item.product_name}</p>
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => {
-                            if (item.quantity > 1) {
-                              updateQuantity(item.id, item.quantity - 1);
-                            }
-                          }}
+                          onClick={() =>
+                            handleMinusQuantity(item.id, item.quantity)
+                          }
                           className="bg-red-500 text-white px-2 rounded-lg shadow-lg"
                         >
                           -
@@ -145,7 +144,7 @@ const Dashboard = () => {
                         <span>{item.quantity}</span>
                         <button
                           onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
+                            handlePlusQuantity(item.id, item.quantity)
                           }
                           className="bg-green-500 text-white px-2 rounded-lg shadow-lg"
                         >
@@ -154,20 +153,21 @@ const Dashboard = () => {
                       </div>
                       <span className="flex-shrink-0 w-1/5">
                         IDR{" "}
-                        {parseInt(item.subtotal_price).toLocaleString("id-ID")}
+                        {Number(item.subtotal_price).toLocaleString("id-ID", {
+                          style: "decimal",
+                        })}
                       </span>
                       <button onClick={() => removeFromCart(item.id)}>
                         <RiDeleteBin5Line className="text-red-500 text-xl shadow-lg rounded-lg" />
                       </button>
                     </div>
-                  ))}
-
+                  ))
+                )}
                 <h3 className="text-lg font-semibold mt-4">
                   Total : IDR{" "}
-                  {cartData?.total_price
-                    ? parseInt(cartData.total_price).toLocaleString("id-ID")
-                    : 0}
-                  {/* Total : IDR {(cartData.total_price).toLocaleString("id-ID")} */}
+                  {Number(grandTotalPrice).toLocaleString("id-ID", {
+                    style: "decimal",
+                  })}
                 </h3>
                 <button className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
                   Check Out
@@ -205,6 +205,7 @@ const Dashboard = () => {
           </ScrollLink>
         </div>
       </div>
+
       {/* Section 2: Kategori Produk */}
       <section
         id="product"
@@ -257,7 +258,8 @@ const Dashboard = () => {
           )}
         </div>
       </section>
-      ;{/* Section 3: About Us */}
+
+      {/* Section 3: About Us */}
       <section
         id="about"
         className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
