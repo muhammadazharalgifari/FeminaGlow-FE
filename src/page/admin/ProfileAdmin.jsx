@@ -78,7 +78,7 @@ const ProfileAdminModal = () => {
 
       <Modal
         title="Edit Profile"
-        visible={visible}
+        open={visible}
         onCancel={() => setVisible(false)}
         footer={null}
         destroyOnClose

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { Dropdown, Menu, Button } from "antd";
+import { Dropdown, Menu, Button, Alert, Popconfirm } from "antd";
 
 import {
   AiOutlineInstagram,
@@ -20,6 +20,7 @@ import { useCart } from "./Cart";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Form, Input, Modal, Upload } from "antd";
+import { TiUploadOutline } from "react-icons/ti";
 
 const Dashboard = () => {
   const {
@@ -33,7 +34,7 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-
+  const [modalTransaksi, setModalTransaksi] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -120,6 +121,10 @@ const Dashboard = () => {
     refetchCart();
   };
 
+  const handleRiwayatTransaksi = () => {
+    setModalTransaksi(true);
+  };
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -136,20 +141,6 @@ const Dashboard = () => {
     localStorage.removeItem("email"); // Hapus email
     navigate("/");
   };
-
-  const userMenu = (
-    <Menu>
-      <Menu.Item key="1" onClick={isModalOpen}>
-        Update User
-      </Menu.Item>
-      <Menu.Item key="2" onClick={""}>
-        Riwayat Transaksi
-      </Menu.Item>
-      <Menu.Item key="3" onClick={handleLogout}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
 
   return (
     <section className="w-full h-screen bg-white " id="home">
@@ -265,9 +256,9 @@ const Dashboard = () => {
               overlay={
                 <Menu>
                   <Menu.Item key="1" onClick={showModal}>
-                    Update User
+                    Profile
                   </Menu.Item>
-                  <Menu.Item key="2" onClick={""}>
+                  <Menu.Item key="2" onClick={handleRiwayatTransaksi}>
                     Riwayat Transaksi
                   </Menu.Item>
                   <Menu.Item key="3" onClick={handleLogout}>
@@ -297,6 +288,7 @@ const Dashboard = () => {
               }}
             >
               <Form
+                layout="vertical"
                 initialValues={{
                   username: formData.username,
                   email: formData.email,
@@ -306,6 +298,21 @@ const Dashboard = () => {
                 }}
                 onFinish={handleUpdateUser}
               >
+                <Form.Item
+                  label="Profile Image"
+                  name="imageProfile"
+                  valuePropName="file"
+                  getValueFromEvent={(e) =>
+                    Array.isArray(e) ? e : e?.fileList[0]
+                  }
+                >
+                  <Upload
+                    listType="picture"
+                    beforeUpload={() => false} // Prevent automatic upload
+                  >
+                    <Button icon={<UploadOutlined />}>Upload</Button>
+                  </Upload>
+                </Form.Item>
                 <Form.Item
                   label="Username"
                   name="username"
@@ -355,6 +362,21 @@ const Dashboard = () => {
                   </Button>
                 </Form.Item>
               </Form>
+            </Modal>
+
+            <Modal
+              open={modalTransaksi}
+              onCancel={() => setModalTransaksi(false)}
+              footer={null}
+              width={500}
+              okButtonProps={{
+                className: "bg-green-500 text-white hover:bg-green-700",
+              }}
+              cancelButtonProps={{
+                className: "bg-red-500 text-white hover:bg-red-700",
+              }}
+            >
+              <h1>Riwayat Transaksi</h1>
             </Modal>
           </div>
         </div>
