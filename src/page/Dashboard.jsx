@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
+import { Dropdown, Menu, Button } from "antd";
+
 import {
   AiOutlineInstagram,
   AiOutlineMail,
@@ -9,7 +11,7 @@ import {
 import { IoArrowRedo } from "react-icons/io5";
 import { GiShoppingCart } from "react-icons/gi";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import axiosInstance from "../../ax";
 import bgdashboard from "../assets/bgdashboard.jpg";
@@ -17,6 +19,7 @@ import promo from "../assets/promo.png";
 import { useCart } from "./Cart";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Form, Input, Modal, Upload } from "antd";
 
 const Dashboard = () => {
   const {
@@ -27,15 +30,72 @@ const Dashboard = () => {
     refetchCart,
   } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    imageProfile: "",
+  });
 
   useEffect(() => {
     AOS.init({
       easing: "ease-in-out",
       once: true,
     });
+    const fetchUserData = async () => {
+      try {
+        const response = await axiosInstance.get("/api/user");
+        setUser(response.data.data);
+        setFormData({
+          username: response.data.data.username || "",
+          email: response.data.data.email || "",
+          password: "",
+          confirmPassword: "",
+          imageProfile: response.data.data.imageProfile || "",
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
   }, []);
+  const handleUpdateUser = async (values) => {
+    try {
+      const response = await axiosInstance.put("/api/update/user", {
+        username: values.username,
+        email: values.email,
+        password: values.password,
+        confirmPassword: values.confirmPassword,
+        imageProfile: values.imageProfile,
+      });
+      if (response.status === 200) {
+        Modal.success({
+          title: "Update Successful",
+          content: "Your profile has been updated successfully!",
+        });
+        setUser(response.data.data);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      Modal.error({
+        title: "Update Failed",
+        content:
+          error.response?.data?.message || "Failed to update user profile.",
+      });
+    }
+  };
 
-  const { data, isLoading, refetch } = useQuery({
+  const {
+    data: categories,
+    isLoading: categoriesLoading,
+    refetch: refetchCategories,
+  } = useQuery({
     queryKey: ["getAllCategories"],
     queryFn: async () => {
       try {
@@ -59,6 +119,37 @@ const Dashboard = () => {
     await updateQuantity(itemId, currentQuantity + 1);
     refetchCart();
   };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email"); // Hapus email
+    navigate("/");
+  };
+
+  const userMenu = (
+    <Menu>
+      <Menu.Item key="1" onClick={isModalOpen}>
+        Update User
+      </Menu.Item>
+      <Menu.Item key="2" onClick={""}>
+        Riwayat Transaksi
+      </Menu.Item>
+      <Menu.Item key="3" onClick={handleLogout}>
+        Logout
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <section className="w-full h-screen bg-white " id="home">
@@ -170,8 +261,101 @@ const Dashboard = () => {
                 </button>
               </div>
             )}
+            <Dropdown
+              overlay={
+                <Menu>
+                  <Menu.Item key="1" onClick={showModal}>
+                    Update User
+                  </Menu.Item>
+                  <Menu.Item key="2" onClick={""}>
+                    Riwayat Transaksi
+                  </Menu.Item>
+                  <Menu.Item key="3" onClick={handleLogout}>
+                    Logout
+                  </Menu.Item>
+                </Menu>
+              }
+              trigger={["click"]}
+            >
+              <AiOutlineUser size={27} className="relative cursor-pointer" />
+            </Dropdown>
 
-            <AiOutlineUser size={27} className="relative cursor-pointer" />
+            <Modal
+              title={
+                <span className="text-xl font-semibold text-gray-800">
+                  Profile
+                </span>
+              }
+              open={isModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              okButtonProps={{
+                className: "bg-green-500 text-white hover:bg-green-700",
+              }}
+              cancelButtonProps={{
+                className: "bg-red-500 text-white hover:bg-red-700",
+              }}
+            >
+              <Form
+                initialValues={{
+                  username: formData.username,
+                  email: formData.email,
+                  password: formData.password,
+                  confirmPassword: formData.confirmPassword,
+                  imageProfile: formData.imageProfile,
+                }}
+                onFinish={handleUpdateUser}
+              >
+                <Form.Item
+                  label="Username"
+                  name="username"
+                  rules={[
+                    { required: true, message: "Please input the username!" },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[
+                    { required: true, message: "Please input the email!" },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    { required: true, message: "Please input the password!" },
+                  ]}
+                >
+                  <Input type="password" />
+                </Form.Item>
+                <Form.Item
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please confirm your password!",
+                    },
+                  ]}
+                >
+                  <Input type="password" />
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{ width: "100%" }}
+                  >
+                    Update User
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Modal>
           </div>
         </div>
 
@@ -216,11 +400,11 @@ const Dashboard = () => {
             Temukan produk-produk terbaik kami untuk perawatan kulit Anda!
           </p>
 
-          {isLoading ? (
+          {categoriesLoading ? (
             <p className="text-lg">Loading...</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36 font-poppins select-none">
-              {data.map((category) => (
+              {categories.map((category) => (
                 <div
                   className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
                   data-aos="zoom-in"
@@ -232,7 +416,7 @@ const Dashboard = () => {
                   </h3>
                   <div className="flex items-center justify-center">
                     <img
-                      src={`http://localhost:3888/public/${category.imageCategory}`}
+                      src={`https://shineskin.hotelmarisrangkas.com/public/${category.imageCategory}`}
                       alt="..."
                       className="w-full h-60 object-contain rounded-lg"
                     />
@@ -258,10 +442,10 @@ const Dashboard = () => {
       {/* Section 3: About Us */}
       <section
         id="about"
-        className="w-full -mt-6 h-screen bg-cover bg-center relative bg-[url('/src/assets/bg3.jpg')]"
+        className="w-full  h-screen bg-cover bg-center relative bg-[url('/src/assets/bg.jpg')]"
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="absolute inset-0 bg-black opacity-10"></div>
 
         <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-6">
           <div
@@ -354,7 +538,7 @@ const Dashboard = () => {
       {/* Footer */}
       <section
         id="footer"
-        className="w-full h-[30px] bg-white text-black flex justify-center items-center"
+        className="w-full h-[30px] bg-black text-white flex justify-center items-center"
       >
         <h1 className="font-poppins">Copyright © 2025 Shineskin Skincare</h1>
       </section>

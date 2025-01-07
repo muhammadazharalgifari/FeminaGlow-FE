@@ -134,24 +134,29 @@ import axiosInstance from "../../../ax";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../Cart";
 import { TiShoppingCart } from "react-icons/ti";
+import { Alert } from "antd"; // Import Alert dari Ant Design
 
 const AllProduct = () => {
   const { categoryId } = useParams();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState({});
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  // Fetch data produk berdasarkan kategori
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["getProductByCategory", categoryId],
     queryFn: async () => {
       try {
         const result = await axiosInstance.get(`/api/${categoryId}/products`);
         return result.data.data;
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching products:", error);
       }
     },
   });
 
+  // Fungsi untuk mengatur jumlah produk
   const handleQuantityChange = (e, productId) => {
     const value = e.target.value;
     if (value >= 1) {
@@ -162,8 +167,42 @@ const AllProduct = () => {
     }
   };
 
+  // Fungsi untuk menambahkan produk ke keranjang
+  const handleAddToCart = async (product) => {
+    const qty = quantity[product.id] || 1;
+
+    try {
+      console.log("Sending to API:", {
+        product_id: product.id,
+
+        quantity: qty,
+      });
+
+      await addToCart(product.id, qty);
+
+      setAlertMessage(
+        `Produk "${product.name}" berhasil ditambahkan ke keranjang.`
+      );
+      setAlertVisible(true);
+
+      // Sembunyikan alert setelah 3 detik
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      setAlertMessage("Gagal menambahkan produk ke keranjang.");
+      setAlertVisible(true);
+
+      // Sembunyikan alert setelah 3 detik
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 3000);
+    }
+  };
+
   return (
-    <div className="bg-gray-300 min-h-screen font-poppins bg-[url('/src/assets/bg.jpg')]">
+    <div className="bg-gray-300 min-h-screen font-poppins bg-cover bg-[url('/src/assets/bg.jpg')]">
       {/* Breadcrumb */}
       <nav className="text-sm pt-4 px-10">
         <Link to="/dashboard" className="hover:text-gray-600">
@@ -186,7 +225,18 @@ const AllProduct = () => {
         </p>
       </div>
 
-      {/* Daftar Product */}
+      {/* Alert untuk Add to Cart */}
+      {alertVisible && (
+        <Alert
+          message={alertMessage}
+          type="success"
+          showIcon
+          closable
+          className="absolute right-4 z-50 top-4"
+        />
+      )}
+
+      {/* Daftar Produk */}
       {isLoading ? (
         <p className="text-lg">Loading...</p>
       ) : (
@@ -200,7 +250,7 @@ const AllProduct = () => {
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                   <div className="flex justify-center">
                     <img
-                      src={`http://localhost:3888/public/${product.imageProduct}`}
+                      src={`https://shineskin.hotelmarisrangkas.com/public/${product.imageProduct}`}
                       alt={product.name}
                       className="w-full h-72 object-contain rounded-lg"
                     />

@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import Sider from "../../component/SIdeBar";
 import Header from "../../component/Header";
 import BreadcrumbComponent from "../../component/Breadcrumb";
+import axiosInstance from "../../../ax";
 
 const { Content } = Layout;
 
@@ -41,8 +42,8 @@ const ProductAdmin = () => {
 
       try {
         // Fetch Products
-        const productResponse = await axios.get(
-          "http://localhost:3888/api/products",
+        const productResponse = await axiosInstance.get(
+          "/api/products",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -57,8 +58,8 @@ const ProductAdmin = () => {
         }
 
         // Fetch Categories
-        const categoryResponse = await axios.get(
-          "http://localhost:3888/api/categories",
+        const categoryResponse = await axiosInstance.get(
+          "/api/categories",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -102,8 +103,8 @@ const ProductAdmin = () => {
     formData.append("imageProduct", values.imageProduct[0].originFileObj);
 
     try {
-      const response = await axios.post(
-        `http://localhost:3888/api/create/product/${values.categoryId}`,
+      const response = await axiosInstance.post(
+        `/api/create/product/${values.categoryId}`,
         formData,
         {
           headers: {
@@ -145,8 +146,8 @@ const handleEditProduct = async (values) => {
   }
 
   try {
-    const response = await axios.put(
-      `http://localhost:3888/api/update/product/${productToEdit.id}`,
+    const response = await axiosInstance.put(
+      `/api/update/product/${productToEdit.id}`,
       formData,
       {
         headers: {
@@ -187,7 +188,7 @@ const handleEditProduct = async (values) => {
   const handleDelete = async (id) => {
     const token = localStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:3888/api/delete/product/${id}`, {
+      await axiosInstance.delete(`/api/delete/product/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       notification.success({
@@ -228,7 +229,7 @@ const handleEditProduct = async (values) => {
       key: "imageProduct",
       render: (imageProduct) => (
         <img
-          src={`http://localhost:3888/public/${imageProduct}`}
+          src={`https://shineskin.hotelmarisrangkas.com/public/${imageProduct}`}
           alt="Product"
           width={100}
         />
