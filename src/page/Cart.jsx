@@ -19,7 +19,7 @@ const Cart = ({ children }) => {
   const {
     data: { items: cartItems = [], totalPrice = 0 } = {},
     isLoading,
-    refetch,
+    refetch,  
   } = useQuery({
     queryKey: ["cartItems"],
     queryFn: fetchCartItems,

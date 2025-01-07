@@ -288,7 +288,7 @@ const Dashboard = () => {
               }}
             >
               <Form
-                layout="vertical"
+              layout="vertical"
                 initialValues={{
                   username: formData.username,
                   email: formData.email,
@@ -298,21 +298,47 @@ const Dashboard = () => {
                 }}
                 onFinish={handleUpdateUser}
               >
-                <Form.Item
-                  label="Profile Image"
-                  name="imageProfile"
-                  valuePropName="file"
-                  getValueFromEvent={(e) =>
-                    Array.isArray(e) ? e : e?.fileList[0]
-                  }
-                >
+                <Form.Item style={{ textAlign: "center" }}>
+                  <div className="mb-4 flex justify-center items-center">
+                    {formData.imageProfile ? (
+                      <img
+                        src={`https://shineskin.hotelmarisrangkas.com/profile/${formData.imageProfile}`}
+                        alt="Profile"
+                        className="w-24 h-24 rounded-full mx-auto object-cover"
+                      />
+                    ) : (
+                      <span className="text-gray-500">No image uploaded</span>
+                    )}
+                  </div>
                   <Upload
-                    listType="picture"
-                    beforeUpload={() => false} // Prevent automatic upload
+                    name="imageProfile"
+                    showUploadList={false}
+                    beforeUpload={(file) => {
+                      const isImage = file.type.startsWith("image/");
+                      if (!isImage) {
+                        message.error("You can only upload image files!");
+                        return Upload.LIST_IGNORE;
+                      }
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          imageProfile: reader.result,
+                        }));
+                      };
+                      reader.readAsDataURL(file);
+                      return false;
+                    }}
                   >
-                    <Button icon={<UploadOutlined />}>Upload</Button>
+                    <Button
+                      icon={<TiUploadOutline />}
+                      className="bg-blue-500 text-white"
+                    >
+                      Change Image
+                    </Button>
                   </Upload>
                 </Form.Item>
+
                 <Form.Item
                   label="Username"
                   name="username"
