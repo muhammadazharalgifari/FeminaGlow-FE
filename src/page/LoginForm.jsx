@@ -1,7 +1,8 @@
-import axios from "axios";
+
 import React, { useState } from "react";
 import { AiOutlineKey, AiOutlineMail } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../ax";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const LoginForm = () => {
 
     try {
       // Mengirim Request Post Ke API Untuk Login
-      const response = await axios.post("http://localhost:3888/api/login", {
+      const response = await axiosInstance.post("/api/login", {
         email,
         password,
       });

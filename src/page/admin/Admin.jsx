@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Layout, Row, Col, Card, Statistic } from "antd";
 import Header from "../../component/Header";
 import Sider from "../../component/SIdeBar";
-import { useNavigate } from "react-router-dom";
 import BreadcrumbComponent from "../../component/Breadcrumb";
 import { Line, Bar } from "react-chartjs-2";
-import axios from "axios"; // Impor axios
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,8 +16,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import axiosInstance from "../../../ax";
 
-// Registrasi elemen yang digunakan untuk grafik
+// Register chart elements
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -33,68 +33,59 @@ ChartJS.register(
 const { Content } = Layout;
 
 const Admin = () => {
-  const [userData, setUserData] = useState([]); // State untuk data pengguna
+  const [userData, setUserData] = useState([]);
   const [productData, setProductData] = useState([]);
+  const [totalTransaction, setTotalTransaction] = useState([]);
   const [salesData, setSalesData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-
-    // Mengambil data pengguna dari API
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       try {
-        // Gantilah URL ini dengan URL API Anda yang sesuai
-        const usersResponse = await axios.get(
-          "http://localhost:3888/api/users",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        console.log("Users Data:", usersResponse.data);
-        setUserData(usersResponse.data.data); // Set data pengguna
+        const usersResponse = await axiosInstance.get("/api/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserData(usersResponse.data.data);
 
-        // Mengambil data kategori produk dari API
-        const productsResponse = await axios.get(
-          "http://localhost:3888/api/categories",
+        const productsResponse = await axiosInstance.get(
+          "/api/categories",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("Products Data:", productsResponse.data);
         setProductData(productsResponse.data.data);
 
-        setLoading(false); // Data berhasil diambil
+        const totalTransactionResponse = await axiosInstance.get(
+          "/api/transactions",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setTotalTransaction(totalTransactionResponse.data.data);
+
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLoading(false); // Jika ada error
+        setLoading(false);
       }
     };
 
-    fetchData(); // Memanggil fungsi untuk mengambil data
+    fetchData();
   }, []);
 
-  // Data untuk grafik penjualan per bulan
+  const formatToRupiah = (value) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(value);
+
   const monthlySalesData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
         label: "Penjualan Bulanan",
-        data: salesData.monthlySales || [500, 800, 700, 650, 900, 1000, 2100], // Fallback data
+        data: salesData.monthlySales || [500, 800, 700, 650, 900, 1000, 2100],
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         fill: true,
@@ -102,13 +93,12 @@ const Admin = () => {
     ],
   };
 
-  // Data untuk grafik penjualan hari ini
   const dailySalesData = {
     labels: ["Pagi", "Siang", "Sore"],
     datasets: [
       {
         label: "Penjualan Hari Ini",
-        data: salesData.dailySales || [500, 600, 400], // Fallback data
+        data: salesData.dailySales || [500, 600, 400],
         backgroundColor: "rgba(75, 192, 192, 0.5)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -121,46 +111,34 @@ const Admin = () => {
       <Sider />
       <Layout className="site-layout">
         <Header />
-        <Content
-          style={{
-            margin: "16px",
-            padding: 24,
-            minHeight: 280,
-          }}
-        >
+        <Content style={{ margin: "16px", padding: 24, minHeight: 280 }}>
           <BreadcrumbComponent />
-          {/* Statistik */}
           <Row gutter={16}>
-            {/* Card untuk jumlah pengguna */}
             <Col span={6}>
               <Card>
                 <Statistic
                   title="Jumlah Pengguna"
-                  value={userData.length} // Menampilkan jumlah pengguna
+                  value={userData.length}
                   loading={loading}
                   valueStyle={{ fontSize: 24 }}
                 />
               </Card>
             </Col>
-
-            {/* Card untuk jumlah kategori produk */}
             <Col span={6}>
               <Card>
                 <Statistic
                   title="Jumlah Kategori Produk"
-                  value={productData.length} // Menghitung jumlah kategori produk
+                  value={productData.length}
                   loading={loading}
                   valueStyle={{ fontSize: 24 }}
                 />
               </Card>
             </Col>
-
-            {/* Card untuk penjualan hari ini */}
             <Col span={6}>
               <Card>
                 <Statistic
                   title="Penjualan Hari Ini"
-                  value={salesData.salesToday || 0}
+                  value={totalTransaction.salesToday || 0}
                   loading={loading}
                   valueStyle={{ fontSize: 24, color: "#3f8600" }}
                   prefix="Rp"
@@ -168,8 +146,6 @@ const Admin = () => {
                 />
               </Card>
             </Col>
-
-            {/* Card untuk penjualan bulanan */}
             <Col span={6}>
               <Card>
                 <Statistic
@@ -183,15 +159,12 @@ const Admin = () => {
               </Card>
             </Col>
           </Row>
-
-          {/* Grafik Penjualan */}
           <Row gutter={16} className="pt-4">
             <Col span={12}>
               <Card title="Grafik Penjualan Hari Ini">
                 <Bar data={dailySalesData} options={{ responsive: true }} />
               </Card>
             </Col>
-
             <Col span={12}>
               <Card title="Grafik Penjualan Per Bulan">
                 <Line data={monthlySalesData} options={{ responsive: true }} />

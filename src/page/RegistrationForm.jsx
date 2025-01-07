@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
-import {
-  AiOutlineIdcard,
-  AiOutlineKey,
-  AiOutlineMail,
-  AiOutlineUser,
-} from "react-icons/ai";
+
+import { AiOutlineKey, AiOutlineMail, AiOutlineUser } from "react-icons/ai";
+import axiosInstance from "../../ax";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -13,10 +9,7 @@ const RegistrationForm = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "user", 
-      
-
-       
+    role: "user",
   });
   const [imageProfile, setImageProfile] = useState(null); // Separate state for file upload
   const [message, setMessage] = useState(""); // To display success/error messages
@@ -56,15 +49,11 @@ const RegistrationForm = () => {
 
     try {
       // Send data to backend
-      const response = await axios.post(
-        "http://localhost:3888/api/register",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosInstance.post("/api/register", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setMessage(response.data.message); // Display success message
     } catch (error) {
       setMessage(error.response?.data?.message || "Registration failed");
@@ -170,10 +159,8 @@ const RegistrationForm = () => {
                     Select Role
                   </option>
                   <option value="user">User</option>
-                  <option value="admin">Admin</option>
                 </select>
               </div>
-             
 
               {/* Submit Button */}
               <button

@@ -15,6 +15,7 @@ import axios from "axios";
 import Sider from "../../component/SIdeBar";
 import Header from "../../component/Header";
 import BreadcrumbComponent from "../../component/Breadcrumb";
+import axiosInstance from "../../../ax";
 const { Content } = Layout;
 
 const UserTable = () => {
@@ -32,8 +33,8 @@ const UserTable = () => {
       navigate("/");
     }
 
-    axios
-      .get("http://localhost:3888/api/users", {
+    axiosInstance
+      .get("/api/users", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -49,8 +50,8 @@ const UserTable = () => {
   // Handle Delete User
   const handleDelete = (userId) => {
     const token = localStorage.getItem("token");
-    axios
-      .delete(`http://localhost:3888/api/delete/user/${userId}`, {
+    axiosInstance
+      .delete(`/api/delete/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -92,8 +93,8 @@ const UserTable = () => {
   const handleFormSubmit = (values) => {
     const token = localStorage.getItem("token");
     axios;
-    axios
-      .put(`http://localhost:3888/api/users/${selectedUser.id}`, values, {
+    axiosInstance
+      .put(`/api/users/${selectedUser.id}`, values, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -148,7 +149,7 @@ const UserTable = () => {
       key: "imageProfile",
       render: (e) => (
         <Image
-          src={`http://localhost:3888/profile/${e}`}
+          src={`https://shineskin.hotelmarisrangkas.com/profile/${e}`}
           width={80}
           height={80}
           alt=""
@@ -212,10 +213,10 @@ const UserTable = () => {
               <Spin size="large" />
             ) : (
               <Table
-                dataSource={userData}
-                columns={columns}
-                rowKey="id"
-                pagination={{ pageSize: 5 }}
+              dataSource={userData}
+              columns={columns}
+              rowKey="id"
+              pagination={{ pageSize: 5 }}
               />
             )}
           </div>
