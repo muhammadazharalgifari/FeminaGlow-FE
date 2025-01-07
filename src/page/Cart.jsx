@@ -14,6 +14,8 @@ const fetchCartItems = async () => {
 };
 
 const Cart = ({ children }) => {
+  const isLogin = !!localStorage.getItem("token");
+
   const {
     data: { items: cartItems = [], totalPrice = 0 } = {},
     isLoading,
@@ -21,6 +23,8 @@ const Cart = ({ children }) => {
   } = useQuery({
     queryKey: ["cartItems"],
     queryFn: fetchCartItems,
+    refetchInterval: 1000,
+    enabled: isLogin,
     initialData: { items: [], totalPrice: 0 },
   });
 
