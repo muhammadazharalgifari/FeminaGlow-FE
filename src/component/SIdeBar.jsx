@@ -8,8 +8,10 @@ import {
   ShoppingOutlined,
   PercentageOutlined,
   LogoutOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { WiDayHail } from "react-icons/wi";
 
 const Sider = () => {
   const navigate = useNavigate();
@@ -44,6 +46,16 @@ const Sider = () => {
       key: "/admin/promo",
       label: "Promo",
       icon: <PercentageOutlined />,
+    },
+    {
+      key: "/harian/transaction",
+      label: "Harian Transaction",
+      icon: <TransactionOutlined />,
+    },
+    {
+      key: "/bulanan/transaction",
+      label: "Bulanan Transaction",
+      icon: <TransactionOutlined />,
     },
     // Add the logout item
     {

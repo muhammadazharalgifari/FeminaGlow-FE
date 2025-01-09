@@ -139,6 +139,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("email"); // Hapus email
+   
     navigate("/");
   };
 
@@ -239,17 +240,22 @@ const Dashboard = () => {
                         <RiDeleteBin5Line className="text-red-500 text-xl shadow-lg rounded-lg" />
                       </button>
                     </div>
+                    
                   ))
+                  
                 )}
+                
                 <h3 className="text-lg font-semibold mt-4">
                   Total : IDR{" "}
                   {Number(grandTotalPrice).toLocaleString("id-ID", {
                     style: "decimal",
                   })}
                 </h3>
-                <button className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
+                <button className="mt-4 bg-slate-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
                   Check Out
                 </button>
+
+               
               </div>
             )}
             <Dropdown
@@ -288,7 +294,7 @@ const Dashboard = () => {
               }}
             >
               <Form
-              layout="vertical"
+                layout="vertical"
                 initialValues={{
                   username: formData.username,
                   email: formData.email,
@@ -454,7 +460,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36 font-poppins select-none">
               {categories.map((category) => (
                 <div
-                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
+                  className="bg-white p-8 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
                   data-aos="zoom-in"
                   data-aos-duration="1000"
                   key={category.id}
