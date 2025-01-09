@@ -177,8 +177,7 @@ const Dashboard = () => {
   };
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("email");
-    setIsLogin(false);
+    localStorage.removeItem("email"); // Hapus email
     navigate("/");
   };
 
@@ -287,7 +286,7 @@ const Dashboard = () => {
                     style: "decimal",
                   })}
                 </h3>
-                <button className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
+                <button className="mt-4 bg-slate-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
                   Check Out
                 </button>
               </div>
@@ -557,7 +556,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36 font-poppins select-none">
               {categories.map((category) => (
                 <div
-                  className="bg-white p-6 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
+                  className="bg-white p-8 shadow-md rounded-lg min-h-[28rem] flex flex-col justify-between"
                   data-aos="zoom-in"
                   data-aos-duration="1000"
                   key={category.id}

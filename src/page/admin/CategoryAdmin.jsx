@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Sider from "../../component/SIdeBar";
 import Header from "../../component/Header";
+import Sider from "../../component/SideBar";
 import BreadcrumbComponent from "../../component/Breadcrumb";
 import { Button, Image, Layout, notification, Modal, Table, Form, Input, Upload } from "antd";
 import { Content } from "antd/es/layout/layout";

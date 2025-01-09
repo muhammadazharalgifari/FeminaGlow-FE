@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Row, Col, Card, Statistic } from "antd";
 import Header from "../../component/Header";
-import Sider from "../../component/SIdeBar";
+import Sider from "../../component/SideBar";
 import BreadcrumbComponent from "../../component/Breadcrumb";
 import { Line, Bar } from "react-chartjs-2";
 
@@ -76,7 +76,7 @@ const Admin = () => {
 
   const formatToRupiah = (value) =>
     new Intl.NumberFormat("id-ID", {
-      style: "currency",
+      style: "decimal",
       currency: "IDR",
     }).format(value);
 

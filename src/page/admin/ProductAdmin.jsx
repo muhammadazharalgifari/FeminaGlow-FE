@@ -13,10 +13,11 @@ import {
 } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Sider from "../../component/SIdeBar";
+
 import Header from "../../component/Header";
 import BreadcrumbComponent from "../../component/Breadcrumb";
 import axiosInstance from "../../../ax";
+import Sider from "../../component/SideBar";
 
 const { Content } = Layout;
 
@@ -42,12 +43,9 @@ const ProductAdmin = () => {
 
       try {
         // Fetch Products
-        const productResponse = await axiosInstance.get(
-          "/api/products",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const productResponse = await axiosInstance.get("/api/products", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (productResponse.data && productResponse.data.products) {
           setProducts(productResponse.data.products);
         } else {
@@ -58,12 +56,9 @@ const ProductAdmin = () => {
         }
 
         // Fetch Categories
-        const categoryResponse = await axiosInstance.get(
-          "/api/categories",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const categoryResponse = await axiosInstance.get("/api/categories", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (categoryResponse.data && categoryResponse.data.data) {
           const categoryList = categoryResponse.data.data.map((category) => ({
             id: category.id,
@@ -131,58 +126,61 @@ const ProductAdmin = () => {
     }
   };
 
+  const formatToRupiah = (value) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "decimal",
+      currency: "IDR",
+    }).format(value);
   // Edit product
- // Edit product
-const handleEditProduct = async (values) => {
-  const token = localStorage.getItem("token");
-  const formData = new FormData();
+  const handleEditProduct = async (values) => {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
 
-  formData.append("name", values.name);
-  formData.append("price", values.price);
-  formData.append("description", values.description);
-  formData.append("stock", values.stock);
-  if (values.imageProduct?.[0]?.originFileObj) {
-    formData.append("imageProduct", values.imageProduct[0].originFileObj);
-  }
+    formData.append("name", values.name);
+    formData.append("price", values.price);
+    formData.append("description", values.description);
+    formData.append("stock", values.stock);
+    if (values.imageProduct?.[0]?.originFileObj) {
+      formData.append("imageProduct", values.imageProduct[0].originFileObj);
+    }
 
-  try {
-    const response = await axiosInstance.put(
-      `/api/update/product/${productToEdit.id}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.data.status === "success") {
-      notification.success({
-        message: "Success",
-        description: response.data.message,
-      });
-
-      // Update product list without page reload
-      setProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product.id === productToEdit.id ? response.data.product : product
-        )
+    try {
+      const response = await axiosInstance.put(
+        `/api/update/product/${productToEdit.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      // Close modal and reset the form
-      setModalVisible(false);
-      form.resetFields();
-      setProductToEdit(null); // Reset the productToEdit state
-    }
-  } catch (error) {
-    console.error("Error editing product:", error);
-    notification.error({
-      message: "Error",
-      description: "Failed to edit product.",
-    });
-  }
-};
+      if (response.data.status === "success") {
+        notification.success({
+          message: "Success",
+          description: response.data.message,
+        });
 
+        // Update product list without page reload
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product.id === productToEdit.id ? response.data.product : product
+          )
+        );
+
+        // Close modal and reset the form
+        setModalVisible(false);
+        form.resetFields();
+        setProductToEdit(null); // Reset the productToEdit state
+      }
+    } catch (error) {
+      console.error("Error editing product:", error);
+      notification.error({
+        message: "Error",
+        description: "Failed to edit product.",
+      });
+    }
+  };
 
   // Delete a product
   const handleDelete = async (id) => {
@@ -213,7 +211,7 @@ const handleEditProduct = async (values) => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price) => `Rp. ${price.toLocaleString()}`,
+      render: (price) => `Rp. ${formatToRupiah(price)}`,
     },
     { title: "Stock", dataIndex: "stock", key: "stock" },
     {
