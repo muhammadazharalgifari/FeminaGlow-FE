@@ -23,6 +23,7 @@ import axiosInstance from "../../ax";
 import bgdashboard from "../assets/bgdashboard.jpg";
 import promo from "../assets/promo.png";
 import { useCart } from "./Cart";
+import { TiUploadOutline } from "react-icons/ti";
 
 const Dashboard = () => {
   const {
@@ -31,6 +32,7 @@ const Dashboard = () => {
     updateQuantity,
     grandTotalPrice,
     refetchCart,
+    transactionId,
   } = useCart();
   const [showPopUp, setShowPopUp] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,6 +40,8 @@ const Dashboard = () => {
   const [isLogin, setIsLogin] = useState(!!localStorage.getItem("token"));
   const [transactions, setTransactions] = useState([]);
   const [modalTransaksi, setModalTransaksi] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -91,6 +95,13 @@ const Dashboard = () => {
       fetchTransactions();
     }
   }, [isLogin]);
+
+  // useEffect(() => {
+  //   if (transactionId) {
+  //     console.log("Transaction ID:", transactionId);
+  //   }
+  // }, [transactionId]);
+
   const handleUpdateUser = async (values) => {
     try {
       const updatedData = new FormData();
@@ -177,8 +188,61 @@ const Dashboard = () => {
   };
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("email"); // Hapus email
+    localStorage.removeItem("email");
     navigate("/");
+  };
+
+  const handleOpenCheckoutModal = () => {
+    setIsCheckoutModalOpen(true);
+  };
+
+  const handleCloseCheckoutModal = () => {
+    setIsCheckoutModalOpen(false);
+  };
+
+  const handleImageUpload = (file) => {
+    setImageFile(file);
+    return false;
+  };
+
+  const handleCheckout = async () => {
+    if (!imageFile) {
+      Modal.error({
+        title: "Upload Gagal",
+        content: "Silakan unggah gambar terlebih dahulu.",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("imageTransaction", imageFile);
+
+    try {
+      const response = await axiosInstance.put(
+        `/api/update-transaction/${transactionId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        Modal.success({
+          title: "Checkout Berhasil",
+          content: "Gambar transaksi berhasil diunggah.",
+        });
+        setIsCheckoutModalOpen(false);
+        refetchCart();
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      Modal.error({
+        title: "Checkout Gagal",
+        content: error.response?.data?.message || "Gagal melakukan checkout.",
+      });
+    }
   };
 
   return (
@@ -286,11 +350,29 @@ const Dashboard = () => {
                     style: "decimal",
                   })}
                 </h3>
-                <button className="mt-4 bg-slate-500 text-white px-4 py-2 rounded-lg w-full font-semibold">
+                <button
+                  className="mt-4 bg-slate-500 text-white px-4 py-2 rounded-lg w-full font-semibold"
+                  onClick={handleOpenCheckoutModal}
+                >
                   Check Out
                 </button>
               </div>
             )}
+
+            <Modal
+              open={isCheckoutModalOpen}
+              onOk={handleCheckout}
+              onCancel={handleCloseCheckoutModal}
+              okText="Submit"
+              cancelText="Cancel"
+            >
+              <p>Unggah Bukti Transaksi</p>
+              <Upload beforeUpload={handleImageUpload} maxCount={1}>
+                <Button icon={<TiUploadOutline />}>Pilih Gambar</Button>
+              </Upload>
+            </Modal>
+
+            {/* Start Dropdown */}
             <Dropdown
               overlay={
                 <Menu>
@@ -320,7 +402,9 @@ const Dashboard = () => {
             >
               <AiOutlineUser size={27} className="relative cursor-pointer" />
             </Dropdown>
+            {/* End Dropdown */}
 
+            {/* Start Modal Profile */}
             <Modal
               title={
                 <span className="text-2xl font-semibold text-gray-800 font-poppins select-none">
@@ -449,7 +533,9 @@ const Dashboard = () => {
                 </Form.Item>
               </Form>
             </Modal>
+            {/* End Modal Profile */}
 
+            {/* Start Modal Riwayat */}
             <Modal
               open={modalTransaksi}
               onCancel={() => setModalTransaksi(false)}
@@ -506,6 +592,7 @@ const Dashboard = () => {
                 <p>Tidak ada riwayat transaksi.</p>
               )}
             </Modal>
+            {/* End Modal Riwayat */}
           </div>
         </div>
 
