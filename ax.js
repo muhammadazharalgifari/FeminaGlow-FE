@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://shineskin.hotelmarisrangkas.com",
+  baseURL: "http://localhost:3888",
+  // baseURL: "https://shineskin.hotelmarisrangkas.com",
 });
 
 axiosInstance.interceptors.request.use(
