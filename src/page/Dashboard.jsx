@@ -17,6 +17,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { GrTransaction } from "react-icons/gr";
 import { IoArrowRedo } from "react-icons/io5";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { MdOutlineShoppingCartCheckout } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import axiosInstance from "../../ax";
@@ -354,9 +355,10 @@ const Dashboard = () => {
                   })}
                 </h3>
                 <button
-                  className="mt-4 bg-black text-white px-4 py-3 rounded-lg w-full font-semibold"
+                  className="flex align-center justify-center mt-4 bg-black text-white py-3 rounded-lg w-full font-semibold gap-2"
                   onClick={handleOpenCheckoutModal}
                 >
+                  <MdOutlineShoppingCartCheckout className="text-xl" />
                   Check Out
                 </button>
               </div>
@@ -376,7 +378,7 @@ const Dashboard = () => {
                 </span>
                 <Upload beforeUpload={handleImageUpload} maxCount={1}>
                   <Button
-                    icon={<FcAddImage className="text-lg"/>}
+                    icon={<FcAddImage className="text-lg" />}
                     type="dashed"
                     className="text-slate-400 h-10 font-poppins"
                   >
