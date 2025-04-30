@@ -1,16 +1,10 @@
+import { Button, Image, Layout, notification, Spin, Table } from "antd";
 import React, { useEffect, useState } from "react";
-import {
-  Layout,
-  Table,
-  Spin,
-  Image,
-  notification,
-} from "antd";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../ax";
-import Sider from "../../component/SideBar";
 import Header from "../../component/Header";
-import BreadcrumbComponent from "../../component/Breadcrumb";
+import Sider from "../../component/SideBar";
+import { RiDeleteBin5Line } from "react-icons/ri";
 const { Content } = Layout;
 
 const UserTable = () => {
@@ -47,10 +41,8 @@ const UserTable = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        // Remove the deleted user from the state
         setUserData(userData.filter((user) => user.id !== userId));
 
-        // Show success notification
         notification.success({
           message: "User Deleted",
           description: "The user has been successfully deleted.",
@@ -60,7 +52,6 @@ const UserTable = () => {
       .catch((error) => {
         console.error("Error deleting user:", error);
 
-        // Show error notification
         notification.error({
           message: "Error",
           description: "There was an error deleting the user.",
@@ -101,6 +92,8 @@ const UserTable = () => {
           width={80}
           height={80}
           alt=""
+          style={{ objectFit: "cover" }}
+          className="rounded-full"
         />
       ),
     },
@@ -109,20 +102,15 @@ const UserTable = () => {
       key: "action",
       render: (text, record) => (
         <div className="flex gap-1">
-          <button
-            style={{
-              backgroundColor: "red",
-              color: "white",
-              border: "none",
-              padding: "5px 10px",
-              marginRight: "5px",
-              cursor: "pointer",
-              borderRadius: "5px",
-            }}
+          <Button
+            type="primary"
+            danger
             onClick={() => handleDelete(record.id)}
+            icon={<RiDeleteBin5Line className="text-lg" />}
+            className="font-poppins h-10"
           >
             Delete
-          </button>
+          </Button>
         </div>
       ),
     },
@@ -131,29 +119,61 @@ const UserTable = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider />
-      <Layout className="site-layout">
+      <Layout className="font-poppins" style={{ backgroundColor: "#475569" }}>
         <Header />
-        <Content
-          style={{
-            margin: "16px",
-            padding: 24,
-            minHeight: 280,
-          }}
-        >
-          <BreadcrumbComponent />
-          <div>
-            {loading ? (
-              <Spin size="large" />
-            ) : (
-              <Table
-                dataSource={userData}
-                columns={columns}
-                rowKey="id"
-                pagination={{ pageSize: 5 }}
-              />
-            )}
-          </div>
-        </Content>
+        <div className="p-6">
+          <Content
+            style={{
+              margin: "16px",
+              padding: 24,
+              minHeight: 280,
+              background: "#fff",
+            }}
+            className="rounded-2xl"
+          >
+            <h1 className="text-3xl font-poppins tracking-tighter select-none mb-4">
+              Users
+            </h1>
+
+            <div>
+              {loading ? (
+                <Spin size="large" />
+              ) : (
+                <Table
+                  dataSource={userData}
+                  columns={columns}
+                  rowKey="id"
+                  bordered
+                  className="shadow-lg"
+                  rowClassName={(_, index) =>
+                    `transition-all ${
+                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } hover:bg-gray-100`
+                  }
+                  pagination={{ pageSize: 4 }}
+                  components={{
+                    body: {
+                      cell: (props) => (
+                        <td
+                          {...props}
+                          className="font-poppins text-gray-700 text-sm"
+                        />
+                      ),
+                    },
+                    header: {
+                      cell: (props) => (
+                        <th
+                          {...props}
+                          className="font-poppins text-gray-900 bg-gray-100"
+                        />
+                      ),
+                    },
+                  }}
+                />
+              )}
+            </div>
+          </Content>
+        </div>
       </Layout>
     </Layout>
   );

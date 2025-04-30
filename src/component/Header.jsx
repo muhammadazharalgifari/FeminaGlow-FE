@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from "react";
-
-
 import {
-  Menu,
   Avatar,
+  Button,
   Dropdown,
-  Layout,
-  Modal,
   Form,
   Input,
+  Layout,
+  Modal,
   Upload,
-  Button,
   message as antMessage,
 } from "antd";
-import {
-  LogoutOutlined,
-  UserOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { FaRegUserCircle } from "react-icons/fa";
+import { FaCircleUser } from "react-icons/fa6";
+import { FcAddImage } from "react-icons/fc";
+import { MdCheckCircle, MdOutlineModeEdit } from "react-icons/md";
+import { TbLogout2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../ax";
 
@@ -29,16 +26,13 @@ const Header = () => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
 
-  
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
     if (storedEmail) {
       setEmail(storedEmail);
     } else {
-      navigate("/"); 
+      navigate("/");
     }
-
-    
 
     const fetchUserData = async () => {
       try {
@@ -86,7 +80,7 @@ const Header = () => {
       );
 
       antMessage.success(response.data.message);
-      setModalVisible(false); // Close modal after successful update
+      setModalVisible(false);
     } catch (error) {
       console.error("Error updating user:", error);
       antMessage.error(
@@ -99,15 +93,23 @@ const Header = () => {
 
   const items = [
     {
-      label: "Profile",
       key: "1",
-      icon: <UserOutlined />,
-      onClick: () => setModalVisible(true), // Open modal on click
+      label: (
+        <div className="flex items-center gap-2 text-sm py-2 px-4">
+          <FaRegUserCircle className="text-xl" />
+          <span className="font-poppins font-medium">Profile</span>
+        </div>
+      ),
+      onClick: () => setModalVisible(true),
     },
     {
-      label: "Logout",
       key: "2",
-      icon: <LogoutOutlined />,
+      label: (
+        <div className="flex items-center gap-2 text-sm py-2 px-4">
+          <TbLogout2 className="text-xl" />
+          <span className="font-poppins font-medium">Logout</span>
+        </div>
+      ),
       onClick: handleLogout,
     },
   ];
@@ -122,21 +124,24 @@ const Header = () => {
           alignItems: "center",
         }}
       >
-        <span style={{ marginRight: 8 }}>
+        <span
+          style={{ marginRight: 8 }}
+          className="font-poppins font-semibold select-none"
+        >
           <h1 className="text-white">{email}</h1>
         </span>
         <Dropdown menu={{ items: items }} trigger={["click"]}>
-          <Avatar icon={<UserOutlined />} />
+          <Avatar icon={<FaCircleUser className="text-3xl cursor-pointer" />} />
         </Dropdown>
       </div>
 
       {/* Profile Modal */}
       <Modal
-        title="Edit Profile"
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
         destroyOnClose
+        width={500}
       >
         <Form
           form={form}
@@ -146,13 +151,21 @@ const Header = () => {
             username: user?.username || "",
             email: user?.email || "",
           }}
+          className="font-poppins"
         >
+          <div className="flex items-center gap-2 mb-4">
+            <MdOutlineModeEdit className="text-3xl fill-amber-600" />
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Edit Profile
+            </h1>
+          </div>
+
           <Form.Item
-            label="Username"
             name="username"
+            label="Username"
             rules={[{ required: true, message: "Please input your username!" }]}
           >
-            <Input />
+            <Input className="font-poppins h-11" placeholder="example" />
           </Form.Item>
 
           <Form.Item
@@ -163,7 +176,7 @@ const Header = () => {
               { type: "email", message: "The input is not a valid email!" },
             ]}
           >
-            <Input />
+            <Input className="font-poppins h-11" placeholder="example.com" />
           </Form.Item>
 
           <Form.Item
@@ -176,7 +189,10 @@ const Header = () => {
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password
+              className="font-poppins h-11"
+              placeholder="********"
+            />
           </Form.Item>
 
           <Form.Item
@@ -194,26 +210,46 @@ const Header = () => {
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password
+              className="font-poppins h-11"
+              placeholder="********"
+            />
           </Form.Item>
 
           <Form.Item
-            label="Profile Image"
+            label="Profile Picture"
             name="imageProfile"
             valuePropName="file"
             getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList[0])}
           >
-            <Upload
-              listType="picture"
-              beforeUpload={() => false} // Prevent automatic upload
-            >
-              <Button icon={<UploadOutlined />}>Upload</Button>
+            <Upload listType="picture" beforeUpload={() => false}>
+              <Button
+                type="dashed"
+                className="text-slate-400 font-poppins h-10"
+                icon={<FcAddImage className="text-lg" />}
+              >
+                Upload Image
+              </Button>
             </Upload>
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading} block>
-              {isLoading ? "Updating..." : "Update Profile"}
+            <Button
+              className="font-poppins h-11"
+              type="primary"
+              htmlType="submit"
+              loading={isLoading}
+              block
+              style={{ backgroundColor: "#16a34a" }}
+            >
+              {isLoading ? (
+                "Updating..."
+              ) : (
+                <div className="flex items-center gap-2">
+                  <MdCheckCircle className="text-xl" />
+                  <span>Submit</span>
+                </div>
+              )}
             </Button>
           </Form.Item>
         </Form>

@@ -1,17 +1,16 @@
-import React from "react";
 import { Layout, Menu } from "antd";
+import React from "react";
 import {
-  DashboardOutlined,
-  AppstoreAddOutlined,
-  UserOutlined,
-  ShoppingCartOutlined,
-  ShoppingOutlined,
-  PercentageOutlined,
-  LogoutOutlined,
-  TransactionOutlined,
-} from "@ant-design/icons";
+  BiSolidDashboard,
+  BiSolidPurchaseTag,
+  BiSolidShoppingBags,
+} from "react-icons/bi";
+import { FaChartBar } from "react-icons/fa";
+import { HiMiniUserGroup } from "react-icons/hi2";
+import { MdCategory, MdDiscount } from "react-icons/md";
+import { TbLogout2 } from "react-icons/tb";
+import logo from "./../assets/logo Femina.jpg";
 import { useNavigate } from "react-router-dom";
-import { WiDayHail } from "react-icons/wi";
 
 const Sider = () => {
   const navigate = useNavigate();
@@ -19,49 +18,84 @@ const Sider = () => {
   const items = [
     {
       key: "/admin",
-      label: "Dashboard",
-      icon: <DashboardOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <BiSolidDashboard className="text-lg" />
+          <span className="font-medium">Dashboard</span>
+        </div>
+      ),
     },
     {
       key: "/admin/user",
-      label: "User",
-      icon: <UserOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <HiMiniUserGroup className="text-lg" />
+          <span className="font-medium">Users</span>
+        </div>
+      ),
     },
     {
       key: "/admin/category",
-      label: "Category",
-      icon: <AppstoreAddOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <MdCategory className="text-lg" />
+          <span className="font-medium">Categories</span>
+        </div>
+      ),
     },
     {
       key: "/admin/products",
-      label: "Products",
-      icon: <ShoppingOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <BiSolidShoppingBags className="text-lg" />
+          <span className="font-medium">Products</span>
+        </div>
+      ),
     },
     {
       key: "/admin/order",
-      label: "Order",
-      icon: <ShoppingCartOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <BiSolidPurchaseTag className="text-lg" />
+          <span className="font-medium">Orders</span>
+        </div>
+      ),
     },
     {
       key: "/admin/promo",
-      label: "Promo",
-      icon: <PercentageOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <MdDiscount className="text-lg" />
+          <span className="font-medium">Promo</span>
+        </div>
+      ),
     },
     {
       key: "/harian/transaction",
-      label: "Harian Transaction",
-      icon: <TransactionOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <FaChartBar className="text-lg" />
+          <span className="font-medium">Daily Sales</span>
+        </div>
+      ),
     },
     {
       key: "/bulanan/transaction",
-      label: "Bulanan Transaction",
-      icon: <TransactionOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <FaChartBar className="text-lg" />
+          <span className="font-medium">Monthly Sales</span>
+        </div>
+      ),
     },
-    // Add the logout item
     {
       key: "/logout",
-      label: "Logout",
-      icon: <LogoutOutlined />,
+      label: (
+        <div className="flex items-center gap-2">
+          <TbLogout2 className="text-lg" />
+          <span className="font-medium">Logout</span>
+        </div>
+      ),
     },
   ];
 
@@ -82,13 +116,11 @@ const Sider = () => {
 
   return (
     <Layout.Sider className="sidebar">
-      <div className="flex items-center p-5 gap-5">
-        <h1 className="text-white font-poppins">Femina Glow</h1>
-        <img
-          src="https://img.freepik.com/premium-vector/abstract-letter-s-gradient-colorful-logo-vector-icon-illustration_269830-1987.jpg?w=826"
-          alt=""
-          className="rounded-full w-20 h-20"
-        />
+      <div className="flex items-center justify-center gap-2 p-6">
+        <img src={logo} alt="" className="rounded-full w-20 h-20" />
+        <h1 className="text-white font-pacifico text-lg select-none">
+          Welcome!
+        </h1>
       </div>
       <Menu
         theme="dark"
@@ -96,6 +128,7 @@ const Sider = () => {
         defaultSelectedKeys={[location.pathname]}
         mode="inline"
         items={items}
+        className="font-poppins font-semibold"
       />
     </Layout.Sider>
   );

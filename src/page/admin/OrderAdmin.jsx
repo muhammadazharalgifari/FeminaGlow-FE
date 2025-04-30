@@ -394,24 +394,26 @@
 
 // export default OrderAdmin;
 
-import React, { useEffect, useState } from "react";
 import {
-  Layout,
-  Table,
-  Tag,
   Button,
-  Modal,
+  Card,
+  Col,
+  Image,
+  Layout,
   List,
   message,
-  Card,
-  Statistic,
-  Col,
+  Modal,
   Row,
+  Statistic,
+  Table,
+  Tag,
 } from "antd";
+import React, { useEffect, useState } from "react";
+import { BiDetail, BiSolidDetail } from "react-icons/bi";
+import axiosInstance from "../../../ax";
 import Header from "../../component/Header";
 import Sider from "../../component/SideBar";
-import BreadcrumbComponent from "../../component/Breadcrumb";
-import axiosInstance from "../../../ax";
+import { MdCheckCircle } from "react-icons/md";
 
 const { Content } = Layout;
 
@@ -613,7 +615,11 @@ const OrderAdmin = () => {
       key: "status",
       render: (status) => {
         const color = status === "SUCCESS" ? "green" : "volcano";
-        return <Tag color={color}>{status.toUpperCase()}</Tag>;
+        return (
+          <Tag className="font-poppins select-none" color={color}>
+            {status.toUpperCase()}
+          </Tag>
+        );
       },
     },
     {
@@ -623,23 +629,28 @@ const OrderAdmin = () => {
       render: (date) => new Date(date).toLocaleDateString(),
     },
     {
-      title: "Actions",
+      title: "Action",
       key: "actions",
       render: (record) => (
-        <Button onClick={() => handleDetail(record)} type="primary">
+        <Button
+          type="primary"
+          onClick={() => handleDetail(record)}
+          icon={<BiSolidDetail className="text-lg" />}
+          className="font-poppins h-10"
+        >
           Detail
         </Button>
       ),
     },
     {
-      title: "Image",
+      title: "Image Transaction",
       dataIndex: "imageTransaction",
       key: "imageTransaction",
       render: (imageTransaction) => (
-        <img
+        <Image
           src={`http://localhost:3888/public/${imageTransaction}`}
           alt="Product"
-          width={100}
+          width={80}
         />
       ),
     },
@@ -662,144 +673,219 @@ const OrderAdmin = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider />
-      <Layout className="site-layout">
+      <Layout className="font-poppins" style={{ backgroundColor: "#475569" }}>
         <Header />
-        <Content style={{ margin: "16px", padding: 24, minHeight: 280 }}>
-          <BreadcrumbComponent />
-          <div className="mt-5">
-            <h1 className="text-2xl font-bold mb-4">Transactions</h1>
-            <div className="w-full h-full flex mb-5">
-              <Row gutter={16} justify="center" align="middle">
-                <Col>
-                  <Card>
-                    <Statistic
-                      title="Total All Transactions"
-                      value={formatToRupiah(totalAmount)}
-                      loading={loading}
-                      valueStyle={{ fontSize: 24, color: "#3f8600" }}
-                    />
-                  </Card>
-                </Col>
-                <Col>
-                  <Card>
-                    <Statistic
-                      title="Total Success Transactions"
-                      value={formatToRupiah(totalSuccess)}
-                      loading={loading}
-                      valueStyle={{ fontSize: 24, color: "#3f8600" }}
-                    />
-                  </Card>
-                </Col>
-                <Col>
-                  <Card>
-                    <Statistic
-                      title="Total Pending Transactions"
-                      value={formatToRupiah(totalPending)}
-                      loading={loading}
-                      valueStyle={{ fontSize: 24, color: "#3f8600" }}
-                    />
-                  </Card>
-                </Col>
-              </Row>
-            </div>
+        <div className="p-6">
+          <Content
+            style={{
+              margin: "16px",
+              padding: 24,
+              minHeight: 280,
+              background: "#fff",
+            }}
+            className="rounded-2xl"
+          >
+            <h1 className="text-2xl tracking-tighter select-none mb-4">
+              Orders
+            </h1>
 
-            <Table
-              columns={columns}
-              dataSource={totalTransaction}
-              rowKey="id"
-              loading={loading}
-              pagination={{ pageSize: 10 }}
-              bordered
-            />
+            <div className="mt-5">
+              <div className="w-full h-full flex mb-5">
+                <Row gutter={16} justify="center" align="middle">
+                  <Col>
+                    <Card className="font-poppins shadow-lg bg-blue-500 border border-blue-500">
+                      <h1 className="text-lg mb-2 font-medium tracking-tight text-white">
+                        Total of All Transactions
+                      </h1>
+                      <Statistic
+                        value={formatToRupiah(totalAmount)}
+                        loading={loading}
+                        valueStyle={{
+                          fontSize: 24,
+                          paddingLeft: 12,
+                          color: "#3b82f6",
+                          fontWeight: 24,
+                          background: "#fff",
+                          borderRadius: 6,
+                        }}
+                      />
+                    </Card>
+                  </Col>
+                  <Col>
+                    <Card className="font-poppins shadow-lg bg-green-500 border border-green-500">
+                      <h1 className="text-lg mb-2 font-medium tracking-tight text-white">
+                        Total Successful Transactions
+                      </h1>
+                      <Statistic
+                        value={formatToRupiah(totalSuccess)}
+                        loading={loading}
+                        valueStyle={{
+                          fontSize: 24,
+                          paddingLeft: 12,
+                          color: "#22c55e",
+                          fontWeight: 24,
+                          background: "#fff",
+                          borderRadius: 6,
+                        }}
+                      />
+                    </Card>
+                  </Col>
+                  <Col>
+                    <Card className="font-poppins shadow-lg bg-red-500 border border-red-500 text-white">
+                      <h1 className="text-lg mb-2 font-medium tracking-tight">
+                        Total Pending Transactions
+                      </h1>
+                      <Statistic
+                        value={formatToRupiah(totalPending)}
+                        loading={loading}
+                        valueStyle={{
+                          fontSize: 24,
+                          paddingLeft: 12,
+                          color: "#ef4444",
+                          fontWeight: 24,
+                          background: "#fff",
+                          borderRadius: 6,
+                        }}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+              </div>
 
-            <h2 className="text-xl font-bold mt-8 mb-4">Daily Sales</h2>
+              <Table
+                columns={columns}
+                dataSource={totalTransaction}
+                rowKey="id"
+                loading={loading}
+                pagination={{ pageSize: 4 }}
+                bordered
+                className="shadow-lg"
+                rowClassName={(_, index) =>
+                  `transition-all ${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  } hover:bg-gray-100`
+                }
+                components={{
+                  body: {
+                    cell: (props) => (
+                      <td
+                        {...props}
+                        className="font-poppins text-gray-700 text-sm"
+                      />
+                    ),
+                  },
+                  header: {
+                    cell: (props) => (
+                      <th
+                        {...props}
+                        className="font-poppins text-gray-900 bg-gray-100"
+                      />
+                    ),
+                  },
+                }}
+              />
+              {/* <h2 className="text-xl font-bold mt-8 mb-4">Daily Sales</h2>
             <Table
               columns={dailySalesColumns}
               dataSource={dailySales}
               rowKey="date"
               pagination={false}
               bordered
-            />
+            /> */}
+            </div>
+          </Content>
+        </div>
+
+        <Modal
+          open={openModal}
+          onCancel={() => setOpenModal(false)}
+          footer={null}
+          width={500}
+          className="font-poppins"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <BiDetail className="text-3xl fill-blue-500" />
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Transaction Detail
+            </h1>
           </div>
 
-          <Modal
-            title="Transaction Details"
-            open={openModal}
-            onCancel={() => setOpenModal(false)}
-            footer={null}
-          >
-            {selectedTransaction ? (
-              <div>
-      
-                
-
-                <p>
-                  <strong>Transaction ID:</strong> {selectedTransaction.id}
-                </p>
-                <p>
-                  <strong>Username:</strong> {selectedTransaction.user.username}
-                </p>
-                <p>
-                  <strong>Email:</strong> {selectedTransaction.user.email}
-                </p>
-                <p>
-                  <strong>Total Price:</strong>{" "}
-                  {formatToRupiah(selectedTransaction.total_price)}
-                </p>
-                <p>
-                  <strong>Status:</strong> {selectedTransaction.status}
-                </p>
-                <p>
-                  <strong>Products List:</strong>
-                </p>
-                {Array.isArray(selectedTransaction?.products) &&
-                selectedTransaction.products.length > 0 ? (
-                  <List
-                    dataSource={selectedTransaction.products}
-                    renderItem={(item) => (
-                      <List.Item key={item.id}>
-                        <div>
-                          <p>
-                            <strong>Product Name:</strong> {item.name}
-                          </p>
-                          <p>
-                            <strong>Quantity:</strong> {item.quantity}
-                          </p>
-                          <p>
-                            <strong>Subtotal Price:</strong>{" "}
-                            {formatToRupiah(item.subtotal_price)}
-                          </p>
-                        </div>
-                      </List.Item>
-                    )}
-                  />
-                ) : (
-                  <p>No products in this transaction.</p>
-                )}
+          {selectedTransaction ? (
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 text-sm">
+                <h3 className="font-semibold">Transaction ID :</h3>
+                <p>{selectedTransaction.id}</p>
               </div>
-            ) : (
-              <p>No transaction selected</p>
-            )}
-            <div className="flex justify-end">
-              <Button
-                type="primary"
-                onClick={handleSuccess}
-                disabled={selectedTransaction?.status === "SUCCESS"}
-                style={{
-                  backgroundColor: selectedTransaction?.status === "SUCCESS" ? "gray" : "#1890ff",
-                }}
-              >
-                Success
-              </Button>
+              <div className="flex items-center gap-2 text-sm">
+                <h3 className="font-semibold">Username :</h3>
+                <p>{selectedTransaction.user.username}</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <h3 className="font-semibold">Email :</h3>
+                <p>{selectedTransaction.user.email}</p>
+              </div>
+              <div className="flex items-center gap-2  text-sm">
+                <h3 className="font-semibold">Total Price :</h3>{" "}
+                <p>{formatToRupiah(selectedTransaction.total_price)}</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <h3 className="font-semibold">Status :</h3>
+                <p>{selectedTransaction.status}</p>
+              </div>
+              <div className="flex items-center gap-2 font-semibold text-sm">
+                <h3 className="font-semibold">Product Lists :</h3>
+              </div>
+              {Array.isArray(selectedTransaction?.products) &&
+              selectedTransaction.products.length > 0 ? (
+                <List
+                  dataSource={selectedTransaction.products}
+                  renderItem={(item) => (
+                    <List.Item key={item.id}>
+                      <div className="grid grid-cols-3">
+                        <div className="font-poppins">
+                          <h3 className="font-semibold">Product Name</h3>{" "}
+                          <p>{item.name}</p>
+                        </div>
+                        <div className="font-poppins flex gap-2">
+                          <h3 className="font-semibold">Qty :</h3>
+                          <p>{item.quantity}</p>
+                        </div>
+                        <div className="font-poppins">
+                          <h3 className="font-semibold">Subtotal</h3>{" "}
+                          <p>{formatToRupiah(item.subtotal_price)}</p>
+                        </div>
+                      </div>
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <p>No products in this transaction.</p>
+              )}
             </div>
-          </Modal>
-        </Content>
+          ) : (
+            <p>No transaction selected</p>
+          )}
+          <div className="flex justify-end">
+            <Button
+              type="primary"
+              onClick={handleSuccess}
+              disabled={selectedTransaction?.status === "SUCCESS"}
+              style={{
+                backgroundColor:
+                  selectedTransaction?.status === "SUCCESS"
+                    ? "gray"
+                    : "#16a34a",
+              }}
+              className="font-poppins h-11 shadow-lg"
+              icon={<MdCheckCircle className="text-xl" />}
+            >
+              Success
+            </Button>
+          </div>
+        </Modal>
       </Layout>
     </Layout>
   );
 };
-
-
-
 
 export default OrderAdmin;

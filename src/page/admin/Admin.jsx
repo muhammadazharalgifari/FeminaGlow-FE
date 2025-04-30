@@ -48,12 +48,9 @@ const Admin = () => {
         });
         setUserData(usersResponse.data.data);
 
-        const productsResponse = await axiosInstance.get(
-          "/api/categories",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const productsResponse = await axiosInstance.get("/api/categories", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setProductData(productsResponse.data.data);
 
         const totalTransactionResponse = await axiosInstance.get(
@@ -81,10 +78,23 @@ const Admin = () => {
     }).format(value);
 
   const monthlySalesData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [
       {
-        label: "Penjualan Bulanan",
+        label: "Monthly Sales",
         data: salesData.monthlySales || [500, 800, 700, 650, 900, 1000, 2100],
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -97,8 +107,8 @@ const Admin = () => {
     labels: ["Pagi", "Siang", "Sore"],
     datasets: [
       {
-        label: "Penjualan Hari Ini",
-        data: salesData.dailySales || [500, 600, 400],
+        label: "Daily Sales",
+        data: salesData.dailySales || [300, 750, 500],
         backgroundColor: "rgba(75, 192, 192, 0.5)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -109,69 +119,103 @@ const Admin = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider />
-      <Layout className="site-layout">
+      <Layout className="font-poppins" style={{ backgroundColor: "#475569" }}>
         <Header />
-        <Content style={{ margin: "16px", padding: 24, minHeight: 280 }}>
-          <BreadcrumbComponent />
-          <Row gutter={16}>
-            <Col span={6}>
-              <Card>
-                <Statistic
-                  title="Jumlah Pengguna"
-                  value={userData.length}
-                  loading={loading}
-                  valueStyle={{ fontSize: 24 }}
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card>
-                <Statistic
-                  title="Jumlah Kategori Produk"
-                  value={productData.length}
-                  loading={loading}
-                  valueStyle={{ fontSize: 24 }}
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card>
-                <Statistic
-                  title="Penjualan Hari Ini"
-                  value={totalTransaction.salesToday || 0}
-                  loading={loading}
-                  valueStyle={{ fontSize: 24, color: "#3f8600" }}
-                  prefix="Rp"
-                  precision={2}
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card>
-                <Statistic
-                  title="Penjualan Bulanan"
-                  value={salesData.salesThisMonth || 0}
-                  loading={loading}
-                  valueStyle={{ fontSize: 24, color: "#3f8600" }}
-                  prefix="Rp"
-                  precision={2}
-                />
-              </Card>
-            </Col>
-          </Row>
-          <Row gutter={16} className="pt-4">
-            <Col span={12}>
-              <Card title="Grafik Penjualan Hari Ini">
-                <Bar data={dailySalesData} options={{ responsive: true }} />
-              </Card>
-            </Col>
-            <Col span={12}>
-              <Card title="Grafik Penjualan Per Bulan">
-                <Line data={monthlySalesData} options={{ responsive: true }} />
-              </Card>
-            </Col>
-          </Row>
-        </Content>
+        <div className="p-6">
+          <Content
+            style={{
+              margin: "16px",
+              padding: 24,
+              minHeight: 280,
+              background: "#fff",
+            }}
+            className="rounded-2xl"
+          >
+            <h1 className="text-3xl font-poppins tracking-tighter select-none mb-4">
+              Dashboard
+            </h1>
+
+            <Row gutter={16}>
+              <Col span={6}>
+                <Card className="font-poppins shadow-lg">
+                  <h1 className="text-lg mb-2 font-medium tracking-tight">
+                    Number of Users
+                  </h1>
+                  <Statistic
+                    value={userData.length}
+                    loading={loading}
+                    valueStyle={{ fontSize: 24 }}
+                    className="font-poppins text-3xl"
+                  />
+                </Card>
+              </Col>
+              <Col span={6}>
+                <Card className="font-poppins shadow-lg">
+                  <h1 className="text-lg mb-2 font-medium tracking-tight">
+                    Number of Categories
+                  </h1>
+                  <Statistic
+                    value={productData.length}
+                    loading={loading}
+                    valueStyle={{ fontSize: 24 }}
+                    className="font-poppins text-3xl"
+                  />
+                </Card>
+              </Col>
+              <Col span={6}>
+                <Card className="font-poppins shadow-lg">
+                  <h1 className="text-lg mb-2 font-medium tracking-tight">
+                    Daily Sales
+                  </h1>
+                  <Statistic
+                    value={totalTransaction.salesToday || 0}
+                    loading={loading}
+                    valueStyle={{ fontSize: 24, color: "#3f8600" }}
+                    prefix="Rp"
+                    precision={2}
+                    className="font-poppins text-3xl"
+                  />
+                </Card>
+              </Col>
+              <Col span={6}>
+                <Card className="font-poppins shadow-lg">
+                  <h1 className="text-lg mb-2 font-medium tracking-tight">
+                    Monthly Sales
+                  </h1>
+                  <Statistic
+                    value={salesData.salesThisMonth || 0}
+                    loading={loading}
+                    valueStyle={{ fontSize: 24, color: "#3f8600" }}
+                    prefix="Rp"
+                    precision={2}
+                    className="font-poppins text-3xl"
+                  />
+                </Card>
+              </Col>
+            </Row>
+            <Row gutter={16} className="pt-4">
+              <Col span={12}>
+                <Card className="font-poppins shadow-lg">
+                  <h1 className="text-lg mb-2 font-medium tracking-tight">
+                    Daily Sales Graph
+                  </h1>
+                  <Bar data={dailySalesData} options={{ responsive: true }} />
+                </Card>
+              </Col>
+              <Col span={12}>
+                <Card className="font-poppins shadow-lg">
+                  <h1 className="text-lg mb-2 font-medium tracking-tight">
+                    Monthly Sales Graph
+                  </h1>
+                  <Line
+                    data={monthlySalesData}
+                    options={{ responsive: true }}
+                  />
+                </Card>
+              </Col>
+            </Row>
+          </Content>
+        </div>
       </Layout>
     </Layout>
   );

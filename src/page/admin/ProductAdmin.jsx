@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from "react";
 import {
-  Layout,
-  Table,
-  Spin,
-  notification,
   Button,
-  Modal,
   Form,
+  Image,
   Input,
-  Upload,
+  Layout,
+  Modal,
   Select,
+  Spin,
+  Table,
+  Upload,
+  notification,
 } from "antd";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Header from "../../component/Header";
-import BreadcrumbComponent from "../../component/Breadcrumb";
+import { AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
+import { FcAddImage } from "react-icons/fc";
+import { MdAddCircle, MdCheckCircle, MdOutlineModeEdit } from "react-icons/md";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import axiosInstance from "../../../ax";
+import Header from "../../component/Header";
 import Sider from "../../component/SideBar";
 
 const { Content } = Layout;
@@ -26,10 +29,10 @@ const ProductAdmin = () => {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState(""); // Track modal type (add product or edit product)
+  const [modalType, setModalType] = useState("");
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
-  const [productToEdit, setProductToEdit] = useState(null); // Track product to edit
+  const [productToEdit, setProductToEdit] = useState(null);
   const navigate = useNavigate();
 
   // Fetch products and categories on load
@@ -43,43 +46,77 @@ const ProductAdmin = () => {
 
       try {
         // Fetch Products
-        const productResponse = await axiosInstance.get("/api/products", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (productResponse.data && productResponse.data.products) {
-          setProducts(productResponse.data.products);
-        } else {
-          notification.error({
-            message: "Error",
-            description: "No products data found.",
-          });
-        }
+        //       const productResponse = await axiosInstance.get("/api/products", {
+        //         headers: { Authorization: `Bearer ${token}` },
+        //       });
+        //       if (productResponse.data && productResponse.data.products) {
+        //         setProducts(productResponse.data.products);
+        //       } else {
+        //         notification.error({
+        //           message: "Error",
+        //           description: "No products data found.",
+        //         });
+        //       }
 
-        // Fetch Categories
-        const categoryResponse = await axiosInstance.get("/api/categories", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (categoryResponse.data && categoryResponse.data.data) {
-          const categoryList = categoryResponse.data.data.map((category) => ({
-            id: category.id,
-            name: category.name,
-          }));
-          setCategories(categoryList); // Update state with filtered data
-        } else {
-          notification.error({
-            message: "Error",
-            description: "No categories data found.",
-          });
+        //       // Fetch Categories
+        //       const categoryResponse = await axiosInstance.get("/api/categories", {
+        //         headers: { Authorization: `Bearer ${token}` },
+        //       });
+        //       if (categoryResponse.data && categoryResponse.data.data) {
+        //         const categoryList = categoryResponse.data.data.map((category) => ({
+        //           id: category.id,
+        //           name: category.name,
+        //         }));
+        //         setCategories(categoryList); // Update state with filtered data
+        //       } else {
+        //         notification.error({
+        //           message: "Error",
+        //           description: "No categories data found.",
+        //         });
+        //       }
+        //     } catch (error) {
+        //       console.error("Error fetching data:", error);
+        //       notification.error({
+        //         message: "Error",
+        //         description: "Failed to fetch data.",
+        //       });
+        //     } finally {
+        //       setLoadingProducts(false); // Stop loading spinner for products
+        //       setLoadingCategories(false); // Stop loading spinner for categories
+        //     }
+        //   };
+
+        //   fetchInitialData();
+        // }, [navigate]);
+        const [productResponse, categoryResponse] = await Promise.all([
+          axiosInstance.get("/api/products", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axiosInstance.get("/api/categories", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        if (productResponse.data?.products) {
+          setProducts(productResponse.data.products);
+        }
+        if (categoryResponse.data?.data) {
+          setCategories(
+            categoryResponse.data.data.map((category) => ({
+              id: category.id,
+              name: category.name,
+            }))
+          );
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(error);
         notification.error({
           message: "Error",
           description: "Failed to fetch data.",
         });
       } finally {
-        setLoadingProducts(false); // Stop loading spinner for products
-        setLoadingCategories(false); // Stop loading spinner for categories
+        setLoadingProducts(false);
+        setLoadingCategories(false);
       }
     };
 
@@ -113,7 +150,7 @@ const ProductAdmin = () => {
           message: "Success",
           description: response.data.message,
         });
-        setProducts([...products, response.data.product]); // Add new product to state
+        setProducts([...products, response.data.product]);
         setModalVisible(false);
         form.resetFields();
       }
@@ -140,7 +177,11 @@ const ProductAdmin = () => {
     formData.append("price", values.price);
     formData.append("description", values.description);
     formData.append("stock", values.stock);
-    if (values.imageProduct?.[0]?.originFileObj) {
+
+    // if (values.imageProduct?.[0]?.originFileObj) {
+    //   formData.append("imageProduct", values.imageProduct[0].originFileObj);
+    // }
+    if (values.imageProduct && values.imageProduct.length > 0) {
       formData.append("imageProduct", values.imageProduct[0].originFileObj);
     }
 
@@ -161,17 +202,15 @@ const ProductAdmin = () => {
           description: response.data.message,
         });
 
-        // Update product list without page reload
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
             product.id === productToEdit.id ? response.data.product : product
           )
         );
 
-        // Close modal and reset the form
         setModalVisible(false);
         form.resetFields();
-        setProductToEdit(null); // Reset the productToEdit state
+        setProductToEdit(null);
       }
     } catch (error) {
       console.error("Error editing product:", error);
@@ -205,7 +244,7 @@ const ProductAdmin = () => {
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Product Name", dataIndex: "name", key: "name" },
     { title: "Description", dataIndex: "description", key: "description" },
     {
       title: "Price",
@@ -220,38 +259,42 @@ const ProductAdmin = () => {
       key: "categoryId",
       render: (id) => categories.find((c) => c.id === id)?.name || "Unknown",
     },
-    { title: "User", dataIndex: "userId", key: "userId" },
     {
-      title: "Image",
+      title: "Product Image",
       dataIndex: "imageProduct",
       key: "imageProduct",
       render: (imageProduct) => (
-        <img
+        <Image
           src={`http://localhost:3888/public/${imageProduct}`}
           alt="Product"
           width={100}
+          style={{ objectFit: "cover" }}
         />
       ),
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (record) => (
         <div className="flex justify-end">
           <Button
             onClick={() => {
               setModalType("editProduct");
-              setProductToEdit(record); // Set the product to be edited
+              setProductToEdit(record);
               form.setFieldsValue({
                 name: record.name,
                 description: record.description,
                 price: record.price,
                 stock: record.stock,
                 categoryId: record.categoryId,
+                imageProduct: [],
               });
               setModalVisible(true);
             }}
             type="primary"
+            icon={<AiOutlineEdit className="text-lg" />}
+            className="font-poppins h-10"
+            style={{ backgroundColor: "#16A34A" }}
           >
             Edit
           </Button>
@@ -260,6 +303,8 @@ const ProductAdmin = () => {
             type="primary"
             danger
             style={{ marginLeft: 8 }}
+            icon={<RiDeleteBin5Line className="text-lg" />}
+            className="font-poppins h-10"
           >
             Delete
           </Button>
@@ -271,44 +316,99 @@ const ProductAdmin = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider collapsed={false} />
-      <Layout>
+      <Layout className="font-poppins" style={{ backgroundColor: "#475569" }}>
         <Header />
-        <Content style={{ margin: "16px", padding: 24, background: "#fff" }}>
-          <BreadcrumbComponent />
-          <div className="gap-4 flex">
-            <Button
-              type="primary"
-              onClick={() => {
-                setModalType("product");
-                setModalVisible(true);
-              }}
-            >
-              Add Product
-            </Button>
-          </div>
-          {loadingProducts || loadingCategories ? (
-            <Spin size="large" />
-          ) : (
-            <Table
-              dataSource={products}
-              columns={columns}
-              rowKey="id"
-              pagination={{ pageSize: 5 }}
-            />
-          )}
-        </Content>
+        <div className="p-6">
+          <Content
+            style={{ margin: "16px", padding: 24, background: "#fff" }}
+            className="rounded-2xl"
+          >
+            <h1 className="text-3xl font-poppins tracking-tighter select-none">
+              Products Management
+            </h1>
+
+            <div className="gap-4 flex my-4">
+              <Button
+                type="primary"
+                onClick={() => {
+                  setModalType("product");
+                  form.resetFields();
+                  setProductToEdit(null);
+                  setModalVisible(true);
+                }}
+                className="font-poppins h-10"
+                icon={<AiOutlinePlus className="text-lg" />}
+              >
+                Create Product
+              </Button>
+            </div>
+            {loadingProducts || loadingCategories ? (
+              <Spin size="large" />
+            ) : (
+              <Table
+                dataSource={products}
+                columns={columns}
+                rowKey="id"
+                bordered
+                className="shadow-lg"
+                pagination={{ pageSize: 4 }}
+                rowClassName={(_, index) =>
+                  `transition-all ${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  } hover:bg-gray-100`
+                }
+                components={{
+                  body: {
+                    cell: (props) => (
+                      <td
+                        {...props}
+                        className="font-poppins text-gray-700 text-sm"
+                      />
+                    ),
+                  },
+                  header: {
+                    cell: (props) => (
+                      <th
+                        {...props}
+                        className="font-poppins text-gray-900 bg-gray-100"
+                      />
+                    ),
+                  },
+                }}
+              />
+            )}
+          </Content>
+        </div>
       </Layout>
       <Modal
         title={
-          modalType === "product"
-            ? "Add Product"
-            : modalType === "editProduct"
-            ? "Edit Product"
-            : ""
+          modalType === "product" ? (
+            <div className="flex items-center gap-2 mb-4">
+              <MdAddCircle className="text-3xl fill-green-600" />
+              <h1 className=" text-2xl font-semibold tracking-tight">
+                Add Product
+              </h1>
+            </div>
+          ) : modalType === "editProduct" ? (
+            <div className="flex items-center gap-2 mb-4">
+              <MdOutlineModeEdit className="text-3xl fill-amber-600" />
+              <h1 className=" text-2xl font-semibold tracking-tight">
+                Edit Product
+              </h1>
+            </div>
+          ) : (
+            ""
+          )
         }
         open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        onOk={() => form.submit()}
+        onCancel={() => {
+          setModalVisible(false);
+          form.resetFields();
+          setProductToEdit(null);
+        }}
+        footer={null}
+        width={500}
+        className="font-poppins"
       >
         {modalType === "product" || modalType === "editProduct" ? (
           <Form
@@ -325,61 +425,106 @@ const ProductAdmin = () => {
                 { required: true, message: "Please input product name!" },
               ]}
             >
-              <Input />
+              <Input
+                className="font-poppins h-11"
+                placeholder="Enter product name"
+              />
             </Form.Item>
+
             <Form.Item
               name="description"
               label="Description"
               rules={[{ required: true, message: "Please input description!" }]}
             >
-              <Input.TextArea />
+              <Input.TextArea
+                rows={6}
+                placeholder="Enter product description"
+                className="font-poppins"
+              />
             </Form.Item>
-            <Form.Item
-              name="price"
-              label="Price"
-              rules={[
-                { required: true, message: "Please input product price!" },
-              ]}
-            >
-              <Input type="number" />
-            </Form.Item>
-            <Form.Item
-              name="stock"
-              label="Stock"
-              rules={[{ required: true, message: "Please input stock!" }]}
-            >
-              <Input type="number" />
-            </Form.Item>
-            <Form.Item
-              name="categoryId"
-              label="Category"
-              rules={[{ required: true, message: "Please select a category!" }]}
-            >
-              <Select placeholder="Select a category">
-                {categories.map((category) => (
-                  <Select.Option key={category.id} value={category.id}>
-                    {category.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="imageProduct"
-              label="Product Image"
-              valuePropName="fileList"
-              getValueFromEvent={(e) => e && e.fileList}
-              rules={[
-                { required: true, message: "Please upload product image!" },
-              ]}
-            >
-              <Upload
-                name="imageProduct"
-                listType="picture"
-                beforeUpload={() => false}
-                maxCount={1}
+
+            <div className="grid grid-cols-2 gap-4">
+              <Form.Item
+                name="price"
+                label="Price"
+                rules={[
+                  { required: true, message: "Please input product price!" },
+                ]}
               >
-                <Button>Click to Upload</Button>
-              </Upload>
+                <Input
+                  type="number"
+                  className="font-poppins h-11"
+                  placeholder="Rp.0"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="stock"
+                label="Stock"
+                rules={[{ required: true, message: "Please input stock!" }]}
+              >
+                <Input
+                  type="number"
+                  className="font-poppins h-11"
+                  placeholder="0"
+                />
+              </Form.Item>
+              <Form.Item
+                name="categoryId"
+                label="Category"
+                rules={[
+                  { required: true, message: "Please select a category!" },
+                ]}
+              >
+                <Select
+                  placeholder="Select a category"
+                  className="font-poppins h-11"
+                >
+                  {categories.map((category) => (
+                    <Select.Option key={category.id} value={category.id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="imageProduct"
+                label="Product Image"
+                valuePropName="fileList"
+                getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+                rules={
+                  modalType === "product"
+                    ? [{ required: true, message: "Please upload image!" }]
+                    : []
+                }
+              >
+                <Upload
+                  name="imageProduct"
+                  listType="picture"
+                  beforeUpload={() => false}
+                  maxCount={1}
+                >
+                  <Button
+                    type="dashed"
+                    className="text-slate-400 font-poppins h-10"
+                    icon={<FcAddImage className="text-lg" />}
+                  >
+                    Upload Image
+                  </Button>
+                </Upload>
+              </Form.Item>
+            </div>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="font-poppins h-11"
+                style={{ width: "100%", backgroundColor: "#16a34a" }}
+              >
+                <MdCheckCircle className="text-xl" />
+                {modalType === "editProduct" ? "Update Product" : "Submit"}
+              </Button>
             </Form.Item>
           </Form>
         ) : null}
