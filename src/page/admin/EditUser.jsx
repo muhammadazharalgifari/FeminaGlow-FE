@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Form, Input, Button, message, Spin, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message, Spin, Upload } from "antd";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../ax";
-
 const EditUser = () => {
   const { userId } = useParams(); // Getting userId from URL params
   const navigate = useNavigate();

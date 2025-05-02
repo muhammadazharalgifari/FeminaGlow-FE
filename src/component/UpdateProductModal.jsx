@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, InputNumber, Button, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import axios from "axios";
+import { Button, Form, Input, InputNumber, Modal, Upload, message } from "antd";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../ax";
 

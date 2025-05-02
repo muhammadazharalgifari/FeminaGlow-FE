@@ -410,10 +410,10 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { BiDetail, BiSolidDetail } from "react-icons/bi";
+import { MdCheckCircle } from "react-icons/md";
 import axiosInstance from "../../../ax";
 import Header from "../../component/Header";
 import Sider from "../../component/SideBar";
-import { MdCheckCircle } from "react-icons/md";
 
 const { Content } = Layout;
 
@@ -427,6 +427,7 @@ const OrderAdmin = () => {
   const [totalSuccess, setTotalSuccess] = useState(0);
   const [dailySales, setDailySales] = useState([]);
 
+  // Fungsi untuk mengambil data transaksi
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -486,6 +487,7 @@ const OrderAdmin = () => {
     fetchTransactions();
   }, []);
 
+  // Fungsi untuk menghitung penjualan harian
   const calculateDailySales = (transactions) => {
     const groupedByDate = transactions.reduce((acc, transaction) => {
       const date = new Date(transaction.createdAt).toLocaleDateString();
@@ -507,11 +509,13 @@ const OrderAdmin = () => {
     setDailySales(sortedByDate);
   };
 
+  // Fungsi untuk menampilkan detail transaksi
   const handleDetail = (transaction) => {
     setSelectedTransaction(transaction);
     setOpenModal(true);
   };
 
+  // Fungsi untuk mengubah status transaksi menjadi "SUCCESS"
   const handleSuccess = async () => {
     if (!selectedTransaction) return;
 
@@ -587,6 +591,7 @@ const OrderAdmin = () => {
     }).format(numericValue);
   };
 
+  // Table columns
   const columns = [
     {
       title: "ID",
@@ -656,6 +661,7 @@ const OrderAdmin = () => {
     },
   ];
 
+  // Tabel untuk Total Penjualan Harian
   const dailySalesColumns = [
     {
       title: "Date",

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { UploadOutlined } from "@ant-design/icons";
 import {
-  Modal,
+  Button,
   Form,
   Input,
+  Modal,
   Upload,
-  Button,
   message as antMessage,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../ax";
 
 const ProfileAdminModal = () => {

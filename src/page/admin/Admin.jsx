@@ -1,20 +1,18 @@
+import { Card, Col, Layout, Row, Statistic } from "antd";
 import React, { useEffect, useState } from "react";
-import { Layout, Row, Col, Card, Statistic } from "antd";
+import { Bar, Line } from "react-chartjs-2";
 import Header from "../../component/Header";
 import Sider from "../../component/SideBar";
-import BreadcrumbComponent from "../../component/Breadcrumb";
-import { Line, Bar } from "react-chartjs-2";
-
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
-  PointElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
 import axiosInstance from "../../../ax";
 
@@ -39,6 +37,7 @@ const Admin = () => {
   const [salesData, setSalesData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch data transactions
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -77,6 +76,7 @@ const Admin = () => {
       currency: "IDR",
     }).format(value);
 
+  // Data for monthly sales
   const monthlySalesData = {
     labels: [
       "Jan",
@@ -103,6 +103,7 @@ const Admin = () => {
     ],
   };
 
+  // Data for daily sales
   const dailySalesData = {
     labels: ["Pagi", "Siang", "Sore"],
     datasets: [

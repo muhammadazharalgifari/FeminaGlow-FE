@@ -26,6 +26,7 @@ const CategoryAdmin = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
+  // fetch categories
   useEffect(() => {
     const fetchInitialData = async () => {
       const token = localStorage.getItem("token");
@@ -52,6 +53,7 @@ const CategoryAdmin = () => {
     fetchInitialData();
   }, [navigate]);
 
+  // handle add category
   const handleAddCategory = async (values) => {
     const token = localStorage.getItem("token");
 
@@ -93,6 +95,7 @@ const CategoryAdmin = () => {
     }
   };
 
+  // create form data
   const createFormData = (values) => {
     const formData = new FormData();
     formData.append("name", values.name.trim());
@@ -108,6 +111,7 @@ const CategoryAdmin = () => {
     return formData;
   };
 
+  // handle delete category
   const handleDeleteCategory = async (id) => {
     const token = localStorage.getItem("token");
 
@@ -147,6 +151,7 @@ const CategoryAdmin = () => {
     }
   };
 
+  // table 
   const columns = [
     {
       title: "ID",

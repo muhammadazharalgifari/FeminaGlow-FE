@@ -95,9 +95,11 @@ const Header = () => {
     {
       key: "1",
       label: (
-        <div className="flex items-center gap-2 text-sm py-2 px-4">
-          <FaRegUserCircle className="text-xl" />
-          <span className="font-poppins font-medium">Profile</span>
+        <div className="flex gap-2 text-sm py-2 px-10">
+          <FaRegUserCircle className="text-lg text-blue-600" />
+          <span className="font-poppins text-blue-600 font-medium">
+            Profile
+          </span>
         </div>
       ),
       onClick: () => setModalVisible(true),
@@ -105,9 +107,9 @@ const Header = () => {
     {
       key: "2",
       label: (
-        <div className="flex items-center gap-2 text-sm py-2 px-4">
-          <TbLogout2 className="text-xl" />
-          <span className="font-poppins font-medium">Logout</span>
+        <div className="flex gap-2 text-sm py-2 px-10">
+          <TbLogout2 className="text-lg text-red-600" />
+          <span className="font-poppins text-red-600 font-medium">Logout</span>
         </div>
       ),
       onClick: handleLogout,

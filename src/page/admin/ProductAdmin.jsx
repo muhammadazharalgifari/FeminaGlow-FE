@@ -13,7 +13,6 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import { FcAddImage } from "react-icons/fc";
 import { MdAddCircle, MdCheckCircle, MdOutlineModeEdit } from "react-icons/md";
@@ -40,54 +39,11 @@ const ProductAdmin = () => {
     const fetchInitialData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate("/"); // Redirect to login if no token is present
+        navigate("/");
         return;
       }
 
       try {
-        // Fetch Products
-        //       const productResponse = await axiosInstance.get("/api/products", {
-        //         headers: { Authorization: `Bearer ${token}` },
-        //       });
-        //       if (productResponse.data && productResponse.data.products) {
-        //         setProducts(productResponse.data.products);
-        //       } else {
-        //         notification.error({
-        //           message: "Error",
-        //           description: "No products data found.",
-        //         });
-        //       }
-
-        //       // Fetch Categories
-        //       const categoryResponse = await axiosInstance.get("/api/categories", {
-        //         headers: { Authorization: `Bearer ${token}` },
-        //       });
-        //       if (categoryResponse.data && categoryResponse.data.data) {
-        //         const categoryList = categoryResponse.data.data.map((category) => ({
-        //           id: category.id,
-        //           name: category.name,
-        //         }));
-        //         setCategories(categoryList); // Update state with filtered data
-        //       } else {
-        //         notification.error({
-        //           message: "Error",
-        //           description: "No categories data found.",
-        //         });
-        //       }
-        //     } catch (error) {
-        //       console.error("Error fetching data:", error);
-        //       notification.error({
-        //         message: "Error",
-        //         description: "Failed to fetch data.",
-        //       });
-        //     } finally {
-        //       setLoadingProducts(false); // Stop loading spinner for products
-        //       setLoadingCategories(false); // Stop loading spinner for categories
-        //     }
-        //   };
-
-        //   fetchInitialData();
-        // }, [navigate]);
         const [productResponse, categoryResponse] = await Promise.all([
           axiosInstance.get("/api/products", {
             headers: { Authorization: `Bearer ${token}` },
@@ -168,6 +124,7 @@ const ProductAdmin = () => {
       style: "decimal",
       currency: "IDR",
     }).format(value);
+
   // Edit product
   const handleEditProduct = async (values) => {
     const token = localStorage.getItem("token");
@@ -177,12 +134,9 @@ const ProductAdmin = () => {
     formData.append("price", values.price);
     formData.append("description", values.description);
     formData.append("stock", values.stock);
-
-    // if (values.imageProduct?.[0]?.originFileObj) {
-    //   formData.append("imageProduct", values.imageProduct[0].originFileObj);
-    // }
-    if (values.imageProduct && values.imageProduct.length > 0) {
-      formData.append("imageProduct", values.imageProduct[0].originFileObj);
+    const newImage = values.imageProduct?.[0]?.originFileObj;
+    if (newImage) {
+      formData.append("imageProduct", newImage);
     }
 
     try {
@@ -202,9 +156,14 @@ const ProductAdmin = () => {
           description: response.data.message,
         });
 
+        const updatedProduct = {
+          ...response.data.updateProduct,
+          category: productToEdit.category, // jaga agar ga ilang di tampilan
+        };
+
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
-            product.id === productToEdit.id ? response.data.product : product
+            product.id === productToEdit.id ? updatedProduct : product
           )
         );
 
@@ -242,6 +201,7 @@ const ProductAdmin = () => {
     }
   };
 
+  // Table columns
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Product Name", dataIndex: "name", key: "name" },
@@ -265,7 +225,7 @@ const ProductAdmin = () => {
       key: "imageProduct",
       render: (imageProduct) => (
         <Image
-          src={`http://localhost:3888/public/${imageProduct}`}
+          src={`http://localhost:3888/public/${imageProduct}?t=${new Date().getTime()}`}
           alt="Product"
           width={100}
           style={{ objectFit: "cover" }}
@@ -380,6 +340,8 @@ const ProductAdmin = () => {
           </Content>
         </div>
       </Layout>
+
+      {/* Modal */}
       <Modal
         title={
           modalType === "product" ? (

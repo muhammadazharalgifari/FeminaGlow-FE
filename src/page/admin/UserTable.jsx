@@ -1,10 +1,10 @@
 import { Button, Image, Layout, notification, Spin, Table } from "antd";
 import React, { useEffect, useState } from "react";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../ax";
 import Header from "../../component/Header";
 import Sider from "../../component/SideBar";
-import { RiDeleteBin5Line } from "react-icons/ri";
 const { Content } = Layout;
 
 const UserTable = () => {
@@ -13,6 +13,7 @@ const UserTable = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Fetch user data
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -60,7 +61,7 @@ const UserTable = () => {
       });
   };
 
-  // Kolom untuk Tabel
+  // Table Columns
   const columns = [
     {
       title: "ID",
