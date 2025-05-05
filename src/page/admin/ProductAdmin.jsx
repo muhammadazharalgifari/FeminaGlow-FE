@@ -444,7 +444,9 @@ const ProductAdmin = () => {
                 >
                   {categories.map((category) => (
                     <Select.Option key={category.id} value={category.id}>
-                      {category.name}
+                      <p className="font-poppins text-slate-500">
+                        {category.name}
+                      </p>
                     </Select.Option>
                   ))}
                 </Select>

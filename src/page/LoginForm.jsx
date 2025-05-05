@@ -48,66 +48,79 @@ const LoginForm = () => {
 
   return (
     <main className="w-full font-poppins min-h-screen bg-cover bg-center bg-[url('https://img.freepik.com/free-photo/elements-relaxing-massage-spa_23-2148176935.jpg?t=st=1730713570~exp=1730717170~hmac=909ac2f5fe863292ff688b6d80cafc48fd9a0c0843f1308f7e37ac728b931a8c&w=1380')]">
-      <div className="w-full min-h-screen flex flex-col justify-center items-center">
-        <div className="w-[900px] h-[600px] bg-white flex justify-center items-center rounded-lg shadow-xl">
-          <div className="w-[500px] h-full bg-blue-600 flex justify-center items-center rounded-l-lg">
+      <div className="w-full min-h-screen flex justify-center items-center">
+        <div className="w-[900px] h-[600px] bg-white flex rounded-lg shadow-xl overflow-hidden">
+          {/* Left Image Side */}
+          <div className="w-1/2 h-full">
             <img
               src="https://img.freepik.com/free-photo/medium-shot-korean-woman-posing-with-face-cream_23-2150171941.jpg?t=st=1730713328~exp=1730716928~hmac=f40479ac9ddbfe47ec138e6e2c92358d9109fa5c44ad00330e3843a8091c752a&w=740"
               alt=""
-              className="w-full h-full"
+              className="w-full h-full object-cover object-center"
             />
           </div>
-          <div className="w-[500px] h-full bg-white rounded-r-lg flex flex-col justify-center items-center">
-            <div className="flex flex-col items-center justify-center px-10 mb-8 gap-2 select-none text-center">
+
+          {/* Right Form Side */}
+          <div className="w-1/2 h-full bg-white flex flex-col justify-center items-center font-poppins p-8">
+            <div className="text-center mb-6">
               <h1 className="text-4xl text-gray-800 font-pacifico">
                 Welcome Back!
               </h1>
-              <p className="text-gray-600 text-sm font-light">Login to your account.</p>
+              <p className="text-gray-600 text-sm mt-4">
+                Login to your account.
+              </p>
             </div>
-            <form className="space-y-4 px-8 w-full">
-              <div className="pt-5">
-                <div className="relative w-full">
-                  <input
-                    type="email"
-                    name="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email "
-                    className="w-full border-b border-black focus:border-black outline-none py-2"
-                    required
-                  />
-                  <AiOutlineMail className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                </div>
 
-                <div className="relative w-full pt-4">
-                  <input
-                    type="password"
-                    name="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    className="w-full border-b mb-4 border-black focus:border-black outline-none py-2"
-                    required
-                  />
-                  <AiOutlineKey className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                </div>
-                <div className="flex font-poppins pb-4 text-xs">
-                  <h1 className="select-none">Don't have an account yet?</h1>
-                  <Link
-                    to="/registrasi"
-                    className="text-blue-600 hover:text-blue-800 transition ml-1"
-                  >
-                    Sign Up
-                  </Link>
-                </div>
-                <button
-                  onClick={handleLogin}
-                  type="submit"
-                  className="w-full bg-black text-white py-2 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 rounded-lg h-11 shadow-lg duration-500"
-                >
-                  Login
-                </button>
+            <form className="w-full space-y-4" onSubmit={handleLogin}>
+              {/* Email */}
+              <div className="relative">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border-b border-black py-2 pr-10 outline-none"
+                  required
+                />
+                <AiOutlineMail className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
+
+              {/* Password */}
+              <div className="relative">
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="********"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full border-b border-black py-2 pr-10 outline-none"
+                  required
+                />
+                <AiOutlineKey className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+
+              {/* Sign Up Link */}
+              <div className="text-xs text-center mt-2">
+                <span>Don't have an account?</span>
+                <Link
+                  to="/registrasi"
+                  className="text-blue-600 hover:text-blue-800 ml-1"
+                >
+                  Sign Up
+                </Link>
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300"
+              >
+                Login
+              </button>
+
+              {/* Message */}
+              {message && (
+                <p className="text-center mt-2 text-red-500">{message}</p>
+              )}
             </form>
-            {message && <p className="mt-4 text-sm text-red-500">{message}</p>}
           </div>
         </div>
       </div>

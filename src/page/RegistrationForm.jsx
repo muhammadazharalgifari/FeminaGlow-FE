@@ -12,7 +12,7 @@ const RegistrationForm = () => {
     confirmPassword: "",
     role: "user",
   });
-  const [imageProfile, setImageProfile] = useState(null); // Separate state for file upload
+  // const [imageProfile, setImageProfile] = useState(null);
   const [message, setMessage] = useState(""); // To display success/error messages
 
   // Handle input changes
@@ -44,9 +44,9 @@ const RegistrationForm = () => {
     data.append("password", formData.password);
     data.append("confirmPassword", formData.confirmPassword);
     data.append("role", formData.role);
-    if (imageProfile) {
-      data.append("imageProfile", imageProfile);
-    }
+    // if (imageProfile) {
+    //   data.append("imageProfile", imageProfile);
+    // }
 
     try {
       // Send data to backend
@@ -62,25 +62,27 @@ const RegistrationForm = () => {
   };
 
   return (
-    <main className="w-full min-h-screen bg-cover bg-center bg-[url('https://img.freepik.com/free-photo/elements-relaxing-massage-spa_23-2148176935.jpg?t=st=1730713570~exp=1730717170~hmac=909ac2f5fe863292ff688b6d80cafc48fd9a0c0843f1308f7e37ac728b931a8c&w=1380')]">
-      <div className="w-full min-h-screen flex flex-col justify-center items-center">
-        <div className="w-[900px] h-[600px] bg-white flex justify-center items-center rounded-lg shadow-xl">
-          <div className="w-[500px] h-full bg-blue-600 flex justify-center items-center rounded-l-lg">
+    <main className="w-full min-h-screen bg-cover bg-center bg-[url('https://img.freepik.com/free-photo/elements-relaxing-massage-spa_23-2148176935.jpg')]">
+      <div className="w-full min-h-screen flex justify-center items-center">
+        <div className="w-[900px] h-[600px] bg-white flex rounded-lg shadow-xl overflow-hidden">
+          {/* Left Image Side */}
+          <div className="w-1/2 h-full">
             <img
-              src="https://img.freepik.com/free-photo/medium-shot-korean-woman-posing-with-face-cream_23-2150171941.jpg?t=st=1730713328~exp=1730716928~hmac=f40479ac9ddbfe47ec138e6e2c92358d9109fa5c44ad00330e3843a8091c752a&w=740"
+              src="https://img.freepik.com/free-photo/medium-shot-korean-woman-posing-with-face-cream_23-2150171941.jpg"
               alt=""
-              className="w-full h-full"
+              className="w-full h-full object-cover object-center"
             />
           </div>
-          <div className="w-[500px] h-full bg-white rounded-r-lg font-poppins">
-            <div className="flex flex-col items-center justify-center py-4 gap-4 select-none">
+
+          {/* Right Form Side */}
+          <div className="w-1/2 h-full bg-white flex flex-col justify-center items-center font-poppins p-8">
+            <div className="text-center mb-6">
               <h1 className="text-4xl text-gray-800 font-pacifico">Register</h1>
-              <p className="text-gray-600 text-sm font-light">
-                Create your account.
-              </p>
+              <p className="text-gray-600 text-sm mt-4">Create your account.</p>
             </div>
-            <form className="space-y-4 px-8" onSubmit={handleSubmit}>
-              {/* Username Field */}
+
+            <form className="w-full space-y-4" onSubmit={handleSubmit}>
+              {/* Username */}
               <div className="relative">
                 <input
                   type="text"
@@ -88,74 +90,62 @@ const RegistrationForm = () => {
                   placeholder="Username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="w-full border-b border-black focus:border-black outline-none py-2 pr-10"
+                  className="w-full border-b border-black py-2 pr-10 outline-none"
                   required
                 />
                 <AiOutlineUser className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
 
-              {/* Email Field */}
+              {/* Email */}
               <div className="relative">
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email Address"
+                  placeholder="Email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full border-b border-black focus:border-black outline-none py-2"
+                  className="w-full border-b border-black py-2 pr-10 outline-none"
                   required
                 />
                 <AiOutlineMail className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
 
-              {/* Password Field */}
+              {/* Password */}
               <div className="relative">
                 <input
                   type="password"
                   name="password"
-                  placeholder="Password"
+                  placeholder="********"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full border-b border-black focus:border-black outline-none py-2"
+                  className="w-full border-b border-black py-2 pr-10 outline-none"
                   required
                 />
                 <AiOutlineKey className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
 
-              {/* Confirm Password Field */}
+              {/* Confirm Password */}
               <div className="relative">
                 <input
                   type="password"
                   name="confirmPassword"
-                  placeholder="Confirm Password"
+                  placeholder="********"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full border-b mb-4 border-black focus:border-black outline-none py-2"
+                  className="w-full border-b border-black py-2 pr-10 outline-none"
                   required
                 />
                 <AiOutlineKey className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
 
-              {/* File Upload Field */}
+              {/* Role (Hidden/Disabled) */}
               <div className="relative">
-                <input
-                  type="file"
-                  name="imageProfile"
-                  onChange={handleFileChange}
-                  className="w-full border-b mb-4 border-black focus:border-black outline-none py-2"
-                  required
-                />
-              </div>
-
-              {/* Role Selection */}
-              <div className="relative flex w-full">
                 <select
                   name="role"
                   id="role"
-                  className="border-b border-black py-2 px-4"
                   value={formData.role}
                   onChange={handleChange}
-                  required
+                  className="w-full border-b border-black py-2 px-2 bg-white"
                   disabled
                 >
                   <option value="">Select Role</option>
@@ -163,31 +153,27 @@ const RegistrationForm = () => {
                 </select>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit */}
               <button
                 type="submit"
-                className="w-full bg-black text-white py-2 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 h-11 rounded-lg shadow-lg duration-500"
+                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300"
               >
-                Register
+                Submit
               </button>
-              <div className="flex font-poppins justify-center text-xs ">
-                <h1>Already have an account?</h1>
 
-                <Link
-                  to="/"
-                  className="text-blue-600 hover:text-blue-800 transition ml-1"
-                >
+              {/* Sign In Link */}
+              <div className="text-xs text-center mt-2">
+                <span>Already have an account?</span>
+                <Link to="/" className="text-blue-600 hover:text-blue-800 ml-1">
                   Sign In
                 </Link>
               </div>
-            </form>
 
-            {/* Message Display */}
-            {message && (
-              <p className="text-center mt-2 text-red-500">
-                {message},login to your account!
-              </p>
-            )}
+              {/* Message */}
+              {message && (
+                <p className="text-center mt-2 text-red-500">{message}</p>
+              )}
+            </form>
           </div>
         </div>
       </div>
