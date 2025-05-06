@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { AiOutlineKey, AiOutlineMail, AiOutlineUser } from "react-icons/ai";
 import axiosInstance from "../../ax";
 import { Link } from "react-router-dom";
@@ -115,7 +114,7 @@ const RegistrationForm = () => {
                 <input
                   type="password"
                   name="password"
-                  placeholder="********"
+                  placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
                   className="w-full border-b border-black py-2 pr-10 outline-none"
@@ -129,7 +128,7 @@ const RegistrationForm = () => {
                 <input
                   type="password"
                   name="confirmPassword"
-                  placeholder="********"
+                  placeholder="Confirm Password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="w-full border-b border-black py-2 pr-10 outline-none"
@@ -138,25 +137,10 @@ const RegistrationForm = () => {
                 <AiOutlineKey className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
 
-              {/* Role (Hidden/Disabled) */}
-              <div className="relative">
-                <select
-                  name="role"
-                  id="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  className="w-full border-b border-black py-2 px-2 bg-white"
-                  disabled
-                >
-                  <option value="">Select Role</option>
-                  <option value="user">User</option>
-                </select>
-              </div>
-
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300"
+                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300 h-11"
               >
                 Submit
               </button>

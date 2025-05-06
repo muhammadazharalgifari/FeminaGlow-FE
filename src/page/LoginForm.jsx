@@ -76,7 +76,7 @@ const LoginForm = () => {
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="example@gmail.com"
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full border-b border-black py-2 pr-10 outline-none"
                   required
@@ -97,6 +97,14 @@ const LoginForm = () => {
                 <AiOutlineKey className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
 
+              {/* Submit */}
+              <button
+                type="submit"
+                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300 h-11"
+              >
+                Login
+              </button>
+
               {/* Sign Up Link */}
               <div className="text-xs text-center mt-2">
                 <span>Don't have an account?</span>
@@ -107,14 +115,6 @@ const LoginForm = () => {
                   Sign Up
                 </Link>
               </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300"
-              >
-                Login
-              </button>
 
               {/* Message */}
               {message && (
