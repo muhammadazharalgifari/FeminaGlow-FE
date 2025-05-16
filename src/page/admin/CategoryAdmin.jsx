@@ -210,7 +210,7 @@ const CategoryAdmin = () => {
               className="rounded-2xl"
             >
               <h1 className="text-3xl font-poppins tracking-tighter select-none">
-                Categories
+                Categories.
               </h1>
 
               <div className="gap-4 flex my-4">

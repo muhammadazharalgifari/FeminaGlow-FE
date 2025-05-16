@@ -133,7 +133,7 @@ const UserTable = () => {
             className="rounded-2xl"
           >
             <h1 className="text-3xl font-poppins tracking-tighter select-none mb-4">
-              Users
+              Users.
             </h1>
 
             <div>

@@ -661,21 +661,6 @@ const OrderAdmin = () => {
     },
   ];
 
-  // Tabel untuk Total Penjualan Harian
-  const dailySalesColumns = [
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Total Sales",
-      dataIndex: "total",
-      key: "total",
-      render: (total) => formatToRupiah(total),
-    },
-  ];
-
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider />
@@ -691,8 +676,8 @@ const OrderAdmin = () => {
             }}
             className="rounded-2xl"
           >
-            <h1 className="text-2xl tracking-tighter select-none mb-4">
-              Orders
+            <h1 className="text-3xl tracking-tighter select-none mb-4">
+              Orders.
             </h1>
 
             <div className="mt-5">
@@ -790,14 +775,6 @@ const OrderAdmin = () => {
                   },
                 }}
               />
-              {/* <h2 className="text-xl font-bold mt-8 mb-4">Daily Sales</h2>
-            <Table
-              columns={dailySalesColumns}
-              dataSource={dailySales}
-              rowKey="date"
-              pagination={false}
-              bordered
-            /> */}
             </div>
           </Content>
         </div>
@@ -847,7 +824,7 @@ const OrderAdmin = () => {
                   dataSource={selectedTransaction.products}
                   renderItem={(item) => (
                     <List.Item key={item.id}>
-                      <div className="grid grid-cols-3">
+                      <div className="grid grid-cols-4">
                         <div className="font-poppins">
                           <h3 className="font-semibold">Product Name</h3>{" "}
                           <p>{item.name}</p>

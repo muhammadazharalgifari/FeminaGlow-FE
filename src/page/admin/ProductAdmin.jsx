@@ -284,7 +284,7 @@ const ProductAdmin = () => {
             className="rounded-2xl"
           >
             <h1 className="text-3xl font-poppins tracking-tighter select-none">
-              Products Management
+              Products Management.
             </h1>
 
             <div className="gap-4 flex my-4">

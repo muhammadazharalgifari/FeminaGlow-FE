@@ -90,7 +90,7 @@ const Dashboard = () => {
         try {
           const response = await axiosInstance.get("/api/auth-transactions");
           setTransactions(response.data.data); // Menyimpan data transaksi
-          console.log(response.data.data);
+          // console.log(response.data.data);
         } catch (error) {
           console.error("Error fetching transactions:", error);
         }
@@ -159,10 +159,10 @@ const Dashboard = () => {
     queryFn: async () => {
       try {
         const result = await axiosInstance.get("/api/categories");
-        console.log(result.data.data);
+        // console.log(result.data.data);
         return result.data.data;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
   });

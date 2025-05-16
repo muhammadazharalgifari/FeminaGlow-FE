@@ -1,5 +1,4 @@
 import { Layout, Menu } from "antd";
-import React from "react";
 import {
   BiSolidDashboard,
   BiSolidPurchaseTag,
@@ -9,8 +8,8 @@ import { FaChartBar } from "react-icons/fa";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { MdCategory, MdDiscount } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
-import logo from "./../assets/logo Femina.jpg";
 import { useNavigate } from "react-router-dom";
+import logo from "./../assets/logo Femina.jpg";
 
 const Sider = () => {
   const navigate = useNavigate();

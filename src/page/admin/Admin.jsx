@@ -1,8 +1,5 @@
-import { Card, Col, Layout, Row, Statistic } from "antd";
-import React, { useEffect, useState } from "react";
-import { Bar, Line } from "react-chartjs-2";
-import Header from "../../component/Header";
-import Sider from "../../component/SideBar";
+import { useQuery } from "@tanstack/react-query";
+import { Card, Col, Layout, Row, Spin, Statistic } from "antd";
 import {
   BarElement,
   CategoryScale,
@@ -14,9 +11,16 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
+import { Bar } from "react-chartjs-2";
 import axiosInstance from "../../../ax";
+import Header from "../../component/Header";
+import Sider from "../../component/SideBar";
+import { HiMiniUserGroup } from "react-icons/hi2";
+import { MdCategory } from "react-icons/md";
+import { FaChartBar } from "react-icons/fa";
+import { FcBarChart } from "react-icons/fc";
+import { format } from "date-fns-tz";
 
-// Register chart elements
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,88 +34,142 @@ ChartJS.register(
 
 const { Content } = Layout;
 
+const fetchUsers = async () => {
+  const response = await axiosInstance.get("/api/users");
+  return response.data.data;
+};
+
+const fetchCategories = async () => {
+  const response = await axiosInstance.get("/api/categories");
+  return response.data.data;
+};
+
+const fetchTransactions = async () => {
+  const response = await axiosInstance.get("/api/transactions");
+  return response.data.data;
+};
+
+const fetchDailySales = async () => {
+  const response = await axiosInstance.get("/api/sales/daily");
+  return response.data.data;
+};
+
+const fetchMonthlySales = async () => {
+  const response = await axiosInstance.get("/api/sales/monthly");
+  return response.data.data;
+};
+
 const Admin = () => {
-  const [userData, setUserData] = useState([]);
-  const [productData, setProductData] = useState([]);
-  const [totalTransaction, setTotalTransaction] = useState([]);
-  const [salesData, setSalesData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: users = [], isLoading: loadingUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: fetchUsers,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+  });
 
-  // Fetch data transactions
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const usersResponse = await axiosInstance.get("/api/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUserData(usersResponse.data.data);
+  const { data: categories = [], isLoading: loadingCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+  });
 
-        const productsResponse = await axiosInstance.get("/api/categories", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setProductData(productsResponse.data.data);
+  const { data: transactions = [], isLoading: loadingTransactions } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+  });
 
-        const totalTransactionResponse = await axiosInstance.get(
-          "/api/transactions",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setTotalTransaction(totalTransactionResponse.data.data);
+  const { data: dailySales = [], isLoading: loadingDailySales } = useQuery({
+    queryKey: ["daily-sales"],
+    queryFn: fetchDailySales,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+  });
 
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
+  const { data: monthlySales = [], isLoading: loadingMonthlySales } = useQuery({
+    queryKey: ["monthly-sales"],
+    queryFn: fetchMonthlySales,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: true,
+    onError: (err) => {
+      console.error("Error fetching monthly sales:", err);
+    },
+  });
 
-    fetchData();
-  }, []);
+  const loading =
+    loadingUsers ||
+    loadingCategories ||
+    loadingTransactions ||
+    loadingDailySales ||
+    loadingMonthlySales;
 
-  const formatToRupiah = (value) =>
+  const timeZone = "Asia/Jakarta";
+
+  const getTotalSalesToday = () => {
+    if (!Array.isArray(dailySales) || dailySales.length === 0) return 0;
+    const todayStr = format(new Date(), "yyyy-MM-dd", { timeZone });
+    const todaySales = dailySales.find((item) => {
+      const itemDateStr = format(new Date(item.date), "yyyy-MM-dd", {
+        timeZone,
+      });
+      return itemDateStr === todayStr;
+    });
+    const total = Number(todaySales?.totalSales || 0);
+    return isNaN(total) ? 0 : total;
+  };
+
+  const getTotalSalesThisMonth = () => {
+    if (!Array.isArray(monthlySales) || monthlySales.length === 0) return 0;
+    const currentMonth = format(new Date(), "yyyy-MM", { timeZone });
+    const monthSale = monthlySales.find((item) => item.month === currentMonth);
+    const total = Number(monthSale?.totalSales || 0);
+    return isNaN(total) ? 0 : total;
+  };
+
+  const formatRupiah = (value) =>
     new Intl.NumberFormat("id-ID", {
-      style: "decimal",
+      style: "currency",
       currency: "IDR",
     }).format(value);
 
-  // Data for monthly sales
-  const monthlySalesData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+  const sortedDailySales = [...dailySales].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  const sortedMonthlySales = [...monthlySales].sort(
+    (a, b) => new Date(`${a.month}-01`) - new Date(`${b.month}-01`)
+  );
+
+  const dailySalesChartData = {
+    labels: sortedDailySales.map((item) =>
+      format(new Date(item.date), "dd MMM", { timeZone })
+    ),
     datasets: [
       {
-        label: "Monthly Sales",
-        data: salesData.monthlySales || [500, 800, 700, 650, 900, 1000, 2100],
-        borderColor: "rgba(75, 192, 192, 1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        fill: true,
+        label: "Daily Sales",
+        data: sortedDailySales.map((item) => Number(item.totalSales)),
+        backgroundColor: "rgba(71, 85, 105, 0.5)",
+        borderColor: "rgba(71, 85, 105, 1)",
+        borderWidth: 1,
       },
     ],
   };
 
-  // Data for daily sales
-  const dailySalesData = {
-    labels: ["Pagi", "Siang", "Sore"],
+  const monthlySalesChartData = {
+    labels: sortedMonthlySales.map((item) =>
+      format(new Date(`${item.month}-01`), "MMM yyyy", { timeZone })
+    ),
     datasets: [
       {
-        label: "Daily Sales",
-        data: salesData.dailySales || [300, 750, 500],
-        backgroundColor: "rgba(75, 192, 192, 0.5)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        label: "Monthly Sales",
+        data: sortedMonthlySales.map((item) =>
+          Number(item.totalSales)
+        ),
+        backgroundColor: "rgba(16, 185, 129, 0.5)",
+        borderColor: "rgba(16, 185, 129, 1)",
         borderWidth: 1,
       },
     ],
@@ -133,88 +191,156 @@ const Admin = () => {
             className="rounded-2xl"
           >
             <h1 className="text-3xl font-poppins tracking-tighter select-none mb-4">
-              Dashboard
+              Dashboard.
             </h1>
+            {loading ? (
+              <Spin tip="Loading..." />
+            ) : (
+              <>
+                <Row gutter={16} justify={"center"} align={"middle"}>
+                  <Col span={5}>
+                    <Card className="font-poppins shadow-lg">
+                      <div className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                          <HiMiniUserGroup className="text-2xl" />
+                          <h1 className="text-lg font-medium tracking-tight">
+                            Users
+                          </h1>
+                        </div>
+                        <Statistic
+                          value={users.length}
+                          valueStyle={{
+                            fontSize: 24,
+                            fontWeight: "bolder",
+                            borderRadius: "24px",
+                            backgroundColor: "black",
+                            color: "white",
+                            padding: "4px 16px",
+                          }}
+                          className="font-poppins text-3xl"
+                        />
+                      </div>
+                    </Card>
+                  </Col>
+                  <Col span={5}>
+                    <Card className="font-poppins shadow-lg">
+                      <div className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                          <MdCategory className="text-2xl" />
+                          <h1 className="text-lg font-medium tracking-tight">
+                            Categories
+                          </h1>
+                        </div>
+                        <Statistic
+                          value={categories.length}
+                          valueStyle={{
+                            fontSize: 24,
+                            fontWeight: "bolder",
+                            borderRadius: "24px",
+                            backgroundColor: "black",
+                            color: "white",
+                            padding: "4px 16px",
+                          }}
+                          className="font-poppins text-3xl"
+                        />
+                      </div>
+                    </Card>
+                  </Col>
+                  <Col span={7}>
+                    <Card
+                      className="font-poppins"
+                      style={{
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <FaChartBar className="text-xl" />
+                        <h1 className="text-lg font-medium tracking-tight">
+                          Daily Sales
+                        </h1>
+                      </div>
+                      <Statistic
+                        value={getTotalSalesToday()}
+                        formatter={formatRupiah}
+                        valueStyle={{
+                          fontSize: 20,
+                          paddingLeft: 18,
+                          color: "white",
+                          fontWeight: "bold",
+                          background: "black",
+                          borderRadius: "12px",
+                          padding: "4px 12px",
+                        }}
+                        className="font-poppins text-3xl"
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={7}>
+                    <Card
+                      className="font-poppins shadow-lg"
+                      style={{
+                        backgroundColor: "white",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <FaChartBar className="text-xl" />
+                        <h1 className="text-lg font-medium tracking-tight">
+                          Monthly Sales
+                        </h1>
+                      </div>
+                      <Statistic
+                        value={getTotalSalesThisMonth()}
+                        formatter={formatRupiah}
+                        valueStyle={{
+                          fontSize: 20,
+                          paddingLeft: 18,
+                          color: "white",
+                          fontWeight: "bold",
+                          background: "black",
+                          borderRadius: "12px",
+                          padding: "4px 12px",
+                        }}
+                        className="font-poppins text-3xl"
+                      />
+                    </Card>
+                  </Col>
+                </Row>
 
-            <Row gutter={16}>
-              <Col span={6}>
-                <Card className="font-poppins shadow-lg">
-                  <h1 className="text-lg mb-2 font-medium tracking-tight">
-                    Number of Users
-                  </h1>
-                  <Statistic
-                    value={userData.length}
-                    loading={loading}
-                    valueStyle={{ fontSize: 24 }}
-                    className="font-poppins text-3xl"
-                  />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card className="font-poppins shadow-lg">
-                  <h1 className="text-lg mb-2 font-medium tracking-tight">
-                    Number of Categories
-                  </h1>
-                  <Statistic
-                    value={productData.length}
-                    loading={loading}
-                    valueStyle={{ fontSize: 24 }}
-                    className="font-poppins text-3xl"
-                  />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card className="font-poppins shadow-lg">
-                  <h1 className="text-lg mb-2 font-medium tracking-tight">
-                    Daily Sales
-                  </h1>
-                  <Statistic
-                    value={totalTransaction.salesToday || 0}
-                    loading={loading}
-                    valueStyle={{ fontSize: 24, color: "#3f8600" }}
-                    prefix="Rp"
-                    precision={2}
-                    className="font-poppins text-3xl"
-                  />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card className="font-poppins shadow-lg">
-                  <h1 className="text-lg mb-2 font-medium tracking-tight">
-                    Monthly Sales
-                  </h1>
-                  <Statistic
-                    value={salesData.salesThisMonth || 0}
-                    loading={loading}
-                    valueStyle={{ fontSize: 24, color: "#3f8600" }}
-                    prefix="Rp"
-                    precision={2}
-                    className="font-poppins text-3xl"
-                  />
-                </Card>
-              </Col>
-            </Row>
-            <Row gutter={16} className="pt-4">
-              <Col span={12}>
-                <Card className="font-poppins shadow-lg">
-                  <h1 className="text-lg mb-2 font-medium tracking-tight">
-                    Daily Sales Graph
-                  </h1>
-                  <Bar data={dailySalesData} options={{ responsive: true }} />
-                </Card>
-              </Col>
-              <Col span={12}>
-                <Card className="font-poppins shadow-lg">
-                  <h1 className="text-lg mb-2 font-medium tracking-tight">
-                    Monthly Sales Graph
-                  </h1>
-                  <Line
-                    data={monthlySalesData}
-                    options={{ responsive: true }}
-                  />
-                </Card>
-              </Col>
-            </Row>
+                <Row gutter={16} className="pt-4">
+                  <Col span={12}>
+                    <Card className="font-poppins shadow-lg">
+                      <div className="flex items-center gap-2">
+                        <FcBarChart className="text-2xl" />
+                        <h1 className="text-lg font-medium tracking-tight">
+                          Daily Sales Graph
+                        </h1>
+                      </div>
+                      <Bar
+                        data={dailySalesChartData}
+                        options={{ responsive: true }}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={12}>
+                    <Card className="font-poppins shadow-lg">
+                      <div className="flex items-center gap-2">
+                        <FcBarChart className="text-2xl" />
+                        <h1 className="text-lg font-medium tracking-tight">
+                          Monthly Sales Graph
+                        </h1>
+                      </div>
+                      <Bar
+                        data={monthlySalesChartData}
+                        options={{ responsive: true }}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+              </>
+            )}
           </Content>
         </div>
       </Layout>
