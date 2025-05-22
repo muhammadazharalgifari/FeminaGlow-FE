@@ -2,22 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { Button, Dropdown, Form, Input, Menu, Modal, Upload } from "antd";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AiFillSave,
-  AiOutlineInstagram,
   AiOutlineLogout,
-  AiOutlineMail,
   AiOutlineProfile,
   AiOutlineUser,
-  AiOutlineWhatsApp,
 } from "react-icons/ai";
 import { FcAddImage } from "react-icons/fc";
 import { GiShoppingCart } from "react-icons/gi";
 import { GrTransaction } from "react-icons/gr";
 import { IoArrowRedo } from "react-icons/io5";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import { MdOutlineShoppingCartCheckout } from "react-icons/md";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import axiosInstance from "../../ax";
@@ -26,8 +23,10 @@ import bgdashboard from "../assets/bgdashboard.jpg";
 import logoBNI from "../assets/BNI.png";
 import logoBRI from "../assets/BRI.png";
 import logoMandiri from "../assets/MANDIRI.png";
-import promo from "../assets/promo.png";
+import Footer from "../component/Footer";
+import About from "./About";
 import { useCart } from "./Cart";
+import ProductPromo from "./product/ProductPromo";
 
 const Dashboard = () => {
   const {
@@ -721,111 +720,13 @@ const Dashboard = () => {
       </section>
 
       {/* Section 3: About Us */}
-      <section
-        id="about"
-        className="w-full  h-screen bg-cover bg-center relative bg-[url('/src/assets/bg.jpg')]"
-      >
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black opacity-10"></div>
-
-        <div className="w-full h-screen flex flex-col pl-[180px] pt-16 relative z-10 gap-6">
-          <div
-            className="max-w-xl bg-white p-8 rounded-lg shadow-lg"
-            data-aos="fade-up"
-            data-aos-duration="1500"
-          >
-            <h1 className="font-pacifico font-light text-3xl">Tentang Kami</h1>
-            <p className="font-poppins pt-6 text-justify tracking-wider">
-              Femina Glow adalah toko online yang menghadirkan koleksi lengkap
-              produk skincare, makeup, dan scrub berkualitas tinggi, yang
-              dirancang untuk merawat dan mempercantik kulit Anda. Kami percaya
-              bahwa kecantikan dimulai dengan perawatan yang tepat, dan kami
-              berkomitmen untuk memberikan produk-produk terbaik yang aman,
-              efektif, dan sesuai dengan berbagai kebutuhan kulit. Femina Glow
-              hadir untuk mendukung perjalanan Anda menuju kulit yang sehat,
-              bercahaya, dan penuh percaya diri!
-            </p>
-          </div>
-          <div
-            className="max-w-lg bg-white rounded-lg shadow-lg p-8"
-            data-aos="fade-up"
-            data-aos-duration="1500"
-          >
-            <h1 className="text-3xl font-pacifico font-light pb-6">
-              Kontak Kami
-            </h1>
-            <div className="gap-4 flex flex-col tracking-widest">
-              <div className="flex items-center">
-                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                  <AiOutlineInstagram size={25} className="fill-pink-400" />
-                </div>
-                <h1 className="pl-4 font-poppins">Femina Glow</h1>
-              </div>
-              <div className="flex items-center">
-                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                  <AiOutlineWhatsApp size={25} className="fill-green-500" />
-                </div>
-                <h1 className="pl-4 font-poppins">081356782980</h1>
-              </div>
-              <div className="flex items-center">
-                <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg shadow-lg">
-                  <AiOutlineMail size={25} className="fill-red-500" />
-                </div>
-                <h1 className="pl-4 font-poppins">FeminaGlow@gmail.com</h1>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <About />
 
       {/* Section 4: Promo */}
-      <section
-        id="promo"
-        className="w-full h-screen flex bg-[url('/src/assets/bg.jpg')] bg-cover bg-center relative"
-      >
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black opacity-10"></div>
-
-        <div className="w-full h-screen flex pl-[180px] pt-16 relative z-10 gap-4">
-          <div className="w-1/2 h-full flex">
-            <img
-              src={promo}
-              alt="Promo Image"
-              className="w-full h-full object-cover object-bottom"
-            />
-          </div>
-          <div className="w-1/2 h-full flex justify-center p-20">
-            <div className="flex flex-col justify-center">
-              <h1 className="blink text-9xl font-bold font-poppins items-center justify-center flex flex-col">
-                BIG SALE
-              </h1>
-              <h1 className="blink2 text-white text-9xl font-bold font-poppins items-center justify-center flex flex-col">
-                BIG SALE
-              </h1>
-              <p className="mt-4 text-gray-700 font-poppins text-justify">
-                Tampil Cantik dan Bersinar di Bulan Ini! Promo Khusus Diskon
-                Produk Perawatan Kulit hingga 50%
-              </p>
-              <div className="flex justify-center">
-                <button
-                  onClick={() => scrollToSection("product")}
-                  className=" z-10text-black font-poppins border hover:bg-amber-300 border-black bg-amber-200 w-44 h-12 items-center flex justify-center rounded-xl font-semibold shadow-2xl mt-8"
-                >
-                  Belanja Sekarang
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ProductPromo />
 
       {/* Footer */}
-      <section
-        id="footer"
-        className="w-full h-[30px] bg-black text-white flex justify-center items-center"
-      >
-        <h1 className="font-poppins">Copyright © 2025 Shineskin Skincare</h1>
-      </section>
+      <Footer />
     </section>
   );
 };

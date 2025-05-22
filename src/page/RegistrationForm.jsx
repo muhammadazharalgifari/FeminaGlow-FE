@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AiOutlineKey, AiOutlineMail, AiOutlineUser } from "react-icons/ai";
-import axiosInstance from "../../ax";
 import { Link } from "react-router-dom";
+import axiosInstance from "../../ax";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({

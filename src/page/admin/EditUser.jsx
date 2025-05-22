@@ -1,10 +1,10 @@
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Spin, Upload } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../ax";
 const EditUser = () => {
-  const { userId } = useParams(); // Getting userId from URL params
+  const { userId } = useParams(); 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -42,7 +42,6 @@ const EditUser = () => {
     const token = localStorage.getItem("token");
     const formData = new FormData();
 
-    // If there's an image file in the form, add it to formData
     if (fileList.length > 0) {
       formData.append("imageProfile", fileList[0].originFileObj);
     }
@@ -95,7 +94,7 @@ const EditUser = () => {
 
         <Form.Item label="Profile Image" name="imageProfile">
           <Upload
-            beforeUpload={() => false} // Prevent auto upload
+            beforeUpload={() => false}
             listType="picture"
             maxCount={1}
             fileList={fileList}

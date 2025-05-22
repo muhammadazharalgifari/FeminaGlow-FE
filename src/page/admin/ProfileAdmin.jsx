@@ -7,7 +7,7 @@ import {
   Upload,
   message as antMessage,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "../../../ax";
 
 const ProfileAdminModal = () => {

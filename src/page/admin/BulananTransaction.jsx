@@ -73,7 +73,7 @@ const BulananTransaction = () => {
                 columns={columns}
                 dataSource={data}
                 rowKey="id"
-                pagination={{ pageSize: 5 }}
+                pagination={{ pageSize: 10 }}
                 bordered
                 className="shadow-lg"
                 rowClassName={(_, index) =>

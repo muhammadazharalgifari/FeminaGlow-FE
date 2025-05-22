@@ -1,5 +1,5 @@
 import { Button, Image, Layout, notification, Spin, Table } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../ax";

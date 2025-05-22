@@ -10,7 +10,7 @@ import {
   Upload,
 } from "antd";
 import { Content } from "antd/es/layout/layout";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FcAddImage } from "react-icons/fc";
 import { MdAddCircle, MdCheckCircle } from "react-icons/md";
@@ -306,7 +306,7 @@ const CategoryAdmin = () => {
           </Form.Item>
 
           <Form.Item
-            label="Category Image"
+            label="Image Category"
             name="imageCategory"
             labelCol={{ span: 24 }}
             rules={[
