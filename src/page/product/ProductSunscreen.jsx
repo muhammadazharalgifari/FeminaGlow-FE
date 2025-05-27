@@ -5,6 +5,9 @@ import { TiShoppingCart } from "react-icons/ti";
 import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../../../ax";
 import { useCart } from "../Cart";
+import Navbar from "../../component/Navbar";
+import productInCategoryImage from "../../assets/productInCategoryImage.jpg";
+import Footer from "../../component/Footer";
 
 const AllProduct = () => {
   const { categoryId } = useParams();
@@ -26,6 +29,22 @@ const AllProduct = () => {
     },
   });
 
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/api/categories");
+      return res.data.data;
+    },
+  });
+
+  const { data: currentCategory, isLoading: isCategoryLoading } = useQuery({
+    queryKey: ["categoryDetail", categoryId],
+    queryFn: async () => {
+      const res = await axiosInstance.get(`/api/category/${categoryId}`);
+      return res.data.data;
+    },
+  });
+
   // Fungsi untuk mengatur jumlah produk
   const handleQuantityChange = (e, productId) => {
     const value = e.target.value;
@@ -43,7 +62,7 @@ const AllProduct = () => {
     try {
       await addToCart(product.id, qty);
       setAlertMessage(
-        `Produk "${product.name}" berhasil ditambahkan ke keranjang.`
+        <div className="font-poppins">{`Produk ${product.name}" berhasil ditambahkan ke keranjang.`}</div>
       );
       setAlertVisible(true);
       setTimeout(() => setAlertVisible(false), 3000);
@@ -56,9 +75,29 @@ const AllProduct = () => {
   };
 
   return (
-    <div className="bg-gray-300 min-h-screen font-poppins bg-cover bg-[url('/src/assets/bg.jpg')]">
+    <div className="relative w-screen h-[504px] font-poppins">
+      <Navbar />
+      <img
+        src={productInCategoryImage}
+        alt="..."
+        className="w-full h-full object-cover"
+      />
+      {isCategoryLoading ? (
+        <div className="absolute inset-0 flex flex-col justify-end items-start text-black text-center px-20 gap-6 mb-20">
+          <h1 className="text-8xl font-extralight">Loading...</h1>
+          <p className="text-3xl font-extralight">Mengambil kategori...</p>
+        </div>
+      ) : (
+        <div className="absolute inset-0 flex flex-col justify-end items-start text-black  px-20 gap-6 mb-20">
+          <h1 className="text-8xl font-extralight">{currentCategory?.name}</h1>
+          <p className="text-3xl font-extralight max-w-3xl">
+            {currentCategory?.description}
+          </p>
+        </div>
+      )}
+
       {/* Breadcrumb */}
-      <nav className="text-sm pt-4 px-10">
+      <nav className="px-20 font-light pt-10">
         <Link to="/dashboard" className="hover:text-gray-600">
           Home
         </Link>
@@ -72,13 +111,6 @@ const AllProduct = () => {
         </span>
       </nav>
 
-      <div className="py-6 text-center">
-        <h1 className="font-pacifico text-3xl mb-4">Produk Kami</h1>
-        <p className="font-poppins text-lg tracking-wider">
-          Pilih produk yang anda inginkan dan tambahkan ke keranjang
-        </p>
-      </div>
-
       {/* Alert */}
       {alertVisible && (
         <Alert
@@ -90,86 +122,112 @@ const AllProduct = () => {
         />
       )}
 
-      {isLoading ? (
-        <p className="text-lg">Loading...</p>
-      ) : (
-        <div className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {data?.map((category) =>
-            category.products.map((product) => {
-              const isPromo = product.isPromo;
-              const displayPrice = isPromo ? product.promoPrice : product.price;
+      <div className="w-screen h-screen bg-white pt-10">
+        <div className="flex flex-wrap items-center px-20 gap-6">
+          <p className="text-2xl font-normal">Kategori Produk</p>
+          {categories?.map((cat) => (
+            <Link
+              key={cat.id}
+              to={`/product/${cat.id}`}
+              className={`px-4 py-2 rounded-full ${
+                cat.id === categoryId
+                  ? "bg-white text-black font-extralight"
+                  : "bg-white bg-opacity-30 hover:bg-opacity-70 font-light"
+              } transition`}
+            >
+              {cat.name}
+            </Link>
+          ))}
 
-              return (
-                <div
-                  className="bg-white p-6 rounded-lg shadow-md flex justify-center items-center"
-                  key={product.id}
-                >
-                  <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex justify-center">
-                      <img
-                        src={`http://localhost:3888/public/${product.imageProduct}`}
-                        alt={product.name}
-                        className="w-full h-72 object-contain rounded-lg"
-                      />
-                    </div>
-                    <div className="flex flex-col justify-between">
-                      <h1 className="text-xl font-semibold tracking-widest uppercase mb-4">
-                        {product.name}
-                      </h1>
+          {isLoading ? (
+            <p className="text-lg">Loading...</p>
+          ) : (
+            <div className="w-full flex items-center justify-center">
+              <div className="p-4 grid grid-cols-2 md:grid-cols-2 gap-8">
+                {data?.map((category) =>
+                  category.products.map((product) => {
+                    const isPromo = product.isPromo;
+                    const displayPrice = isPromo
+                      ? product.promoPrice
+                      : product.price;
 
-                      <p className="text-gray-700 text-sm mb-4">
-                        Category :{" "}
-                        <span className="font-semibold">{category.name}</span>
-                      </p>
-
-                      <div className="text-xl font-bold mb-4">
-                        {isPromo && (
-                          <span className="text-red-500 mr-2">
-                            IDR {product.promoPrice.toLocaleString("id-ID")}
-                          </span>
-                        )}
-                        {isPromo ? (
-                          <span className="line-through text-gray-500 text-sm">
-                            IDR {product.price.toLocaleString("id-ID")}
-                          </span>
-                        ) : (
-                          <span>
-                            IDR {product.price.toLocaleString("id-ID")}
-                          </span>
-                        )}
-                      </div>
-
-                      <p className="text-gray-600 mb-6 text-sm min-h-[4rem]">
-                        {product.description}
-                      </p>
-
-                      <div className="flex items-center space-x-4 mb-4">
-                        <label htmlFor="quantity" className="font-semibold">
-                          Qty :
-                        </label>
-                        <input
-                          type="number"
-                          value={quantity[product.id] || 1}
-                          onChange={(e) => handleQuantityChange(e, product.id)}
-                          className="w-20 p-2 border rounded-lg shadow-lg text-center text-gray-700"
-                        />
-                      </div>
-
-                      <button
-                        className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 cursor-pointer"
-                        onClick={() => handleAddToCart(product)}
+                    return (
+                      <div
+                        className="bg-[#FCE2CA] p-6 rounded-lg shadow-[10px_10px_20px_#E2B581] flex items-center gap-4 w-full max-w-xl"
+                        key={product.id}
                       >
-                        <TiShoppingCart className="text-2xl" />
-                        <p>Add to Cart</p>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
+                        {/* Product Image */}
+                        <img
+                          src={`http://localhost:3888/public/${product.imageProduct}`}
+                          alt={product.name}
+                          className="w-[123px] h-[184px] object-contain rounded-md"
+                        />
+
+                        {/* Product Info */}
+                        <div className="flex flex-col gap-2 justify-between text-black w-full">
+                          <h1 className="text-lg font-semibold uppercase tracking-widest mb-1">
+                            {product.name}
+                          </h1>
+                          <p className="text-sm mb-1">
+                            Category: {category.name}
+                          </p>
+
+                          <div className="text-lg font-bold mb-2">
+                            {isPromo && (
+                              <span className="text-red-500 mr-2">
+                                IDR {product.promoPrice.toLocaleString("id-ID")}
+                              </span>
+                            )}
+                            {isPromo ? (
+                              <span className="line-through text-black text-sm">
+                                IDR {product.price.toLocaleString("id-ID")}
+                              </span>
+                            ) : (
+                              <span className="text-black">
+                                IDR {product.price.toLocaleString("id-ID")}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-sm font-extralight mb-4 line-clamp-2">
+                            {product.description}
+                          </p>
+
+                          {/* Quantity & Button */}
+                          <div className="flex items-center gap-3 mb-2">
+                            <label htmlFor="qty" className="text-sm">
+                              Qty:
+                            </label>
+                            <input
+                              type="number"
+                              min={1}
+                              value={quantity[product.id] || 1}
+                              onChange={(e) =>
+                                handleQuantityChange(e, product.id)
+                              }
+                              className="w-14 px-2 py-1 rounded text-black text-center"
+                            />
+                          </div>
+
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            className="flex items-center justify-center gap-2 py-2 w-full rounded-full font-semibold text-sm bg-white text-black-600 hover:bg-orange-100 transition"
+                          >
+                            <TiShoppingCart className="text-xl" />
+                            Masukan Keranjang
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
           )}
         </div>
-      )}
+      </div>
+
+      <Footer />
     </div>
   );
 };

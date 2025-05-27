@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AiOutlineKey, AiOutlineMail } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../ax";
+import background from "../assets/background.png";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -47,7 +48,10 @@ const LoginForm = () => {
   };
 
   return (
-    <main className="w-full font-poppins min-h-screen bg-cover bg-center bg-[url('https://img.freepik.com/free-photo/elements-relaxing-massage-spa_23-2148176935.jpg?t=st=1730713570~exp=1730717170~hmac=909ac2f5fe863292ff688b6d80cafc48fd9a0c0843f1308f7e37ac728b931a8c&w=1380')]">
+    <main
+      className="w-full font-poppins min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${background})` }}
+    >
       <div className="w-full min-h-screen flex justify-center items-center">
         <div className="w-[900px] h-[600px] bg-white flex rounded-lg shadow-xl overflow-hidden">
           {/* Left Image Side */}
@@ -100,7 +104,7 @@ const LoginForm = () => {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300 h-11"
+                className="w-full text-black py-2 bg-[#F5BC95] hover:bg-[#E89C69] transition-colors duration-200 rounded-2xl h-11 tracking-wider"
               >
                 Login
               </button>

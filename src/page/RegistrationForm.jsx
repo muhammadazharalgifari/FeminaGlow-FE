@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AiOutlineKey, AiOutlineMail, AiOutlineUser } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../ax";
+import background from "../assets/background.png";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -61,7 +62,10 @@ const RegistrationForm = () => {
   };
 
   return (
-    <main className="w-full min-h-screen bg-cover bg-center bg-[url('https://img.freepik.com/free-photo/elements-relaxing-massage-spa_23-2148176935.jpg')]">
+    <main
+      className="w-full min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${background})` }}
+    >
       <div className="w-full min-h-screen flex justify-center items-center">
         <div className="w-[900px] h-[600px] bg-white flex rounded-lg shadow-xl overflow-hidden">
           {/* Left Image Side */}
@@ -140,7 +144,7 @@ const RegistrationForm = () => {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full bg-black text-white py-2 hover:bg-gray-800 rounded-lg shadow transition duration-300 h-11"
+                className="w-full text-black py-2 rounded-2xl h-11 bg-[#F5BC95] hover:bg-[#E89C69] transition-colors duration-200 tracking-wider"
               >
                 Submit
               </button>
