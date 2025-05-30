@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useCart } from "../page/Cart";
 import axiosInstance from "../../ax";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import { BiLogOut, BiPurchaseTag, BiShoppingBag, BiUser } from "react-icons/bi";
 import { Button, Dropdown, Form, Input, Menu, Modal, Upload } from "antd";
@@ -217,10 +217,12 @@ const Navbar = () => {
 
   return (
     <div className="fixed top-0 w-full z-50">
-      <div className="h-24 flex items-center justify-between px-10">
-        <div className="w-[190px] font-pacifico text-3xl">
-          <h1 className="text-black select-none">Femina Glow.</h1>
-        </div>
+      <div className="h-24 flex items-center justify-between mx-20">
+        <Link to={"/dashboard"}>
+          <div className="w-[190px] font-pacifico text-3xl">
+            <h1 className="text-black select-none">Femina Glow.</h1>
+          </div>
+        </Link>
         <div className="flex-1 flex justify-center">
           <nav className="flex gap-6 font-poppins text-black items-center cursor-pointer font-medium">
             <ScrollLink to="home" smooth={true} duration={500}>

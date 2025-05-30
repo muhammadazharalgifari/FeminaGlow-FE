@@ -15,7 +15,7 @@ const UserImpressionSection = () => {
 
       <div className="flex items-center justify-center gap-20">
         <div className="flex items-center justify-center gap-4">
-          <div className="flex w-[480px] h-[223px] bg-[#F8F3F3] max-w-xl gap-4 shadow-xl shadow-[#FCE2CA]">
+          <div className="flex w-[480px] h-[223px] bg-[#F8F3F3] max-w-xl gap-4 shadow-[10px_10px_20px_#FCE2CA]">
             <img
               src={userImpressionImage}
               alt="User Impression"
@@ -42,7 +42,7 @@ const UserImpressionSection = () => {
         </div>
 
         <div className="flex items-center justify-center gap-4">
-          <div className="flex w-[480px] h-[223px] bg-[#F8F3F3] max-w-xl gap-4 shadow-xl shadow-[#FCE2CA]">
+          <div className="flex w-[480px] h-[223px] bg-[#F8F3F3] max-w-xl gap-4 shadow-[10px_10px_20px_#FCE2CA]">
             <img
               src={userImpressionImage}
               alt="User Impression"

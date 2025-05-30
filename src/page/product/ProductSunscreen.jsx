@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Alert } from "antd";
+import { Alert, Image } from "antd";
 import { useState } from "react";
 import { TiShoppingCart } from "react-icons/ti";
 import { Link, useParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import { useCart } from "../Cart";
 import Navbar from "../../component/Navbar";
 import productInCategoryImage from "../../assets/productInCategoryImage.jpg";
 import Footer from "../../component/Footer";
+import { FaHome } from "react-icons/fa";
 
 const AllProduct = () => {
   const { categoryId } = useParams();
@@ -75,69 +76,80 @@ const AllProduct = () => {
   };
 
   return (
-    <div className="relative w-screen h-[504px] font-poppins">
+    <div className="relative w-full font-poppins overflow-x-hidden">
       <Navbar />
-      <img
-        src={productInCategoryImage}
-        alt="..."
-        className="w-full h-full object-cover"
-      />
-      {isCategoryLoading ? (
-        <div className="absolute inset-0 flex flex-col justify-end items-start text-black text-center px-20 gap-6 mb-20">
-          <h1 className="text-8xl font-extralight">Loading...</h1>
-          <p className="text-3xl font-extralight">Mengambil kategori...</p>
-        </div>
-      ) : (
-        <div className="absolute inset-0 flex flex-col justify-end items-start text-black  px-20 gap-6 mb-20">
-          <h1 className="text-8xl font-extralight">{currentCategory?.name}</h1>
-          <p className="text-3xl font-extralight max-w-3xl">
-            {currentCategory?.description}
-          </p>
-        </div>
-      )}
-
-      {/* Breadcrumb */}
-      <nav className="px-20 font-light pt-10">
-        <Link to="/dashboard" className="hover:text-gray-600">
-          Home
-        </Link>
-        <span className="mx-2">/</span>
-        <span>
-          {isLoading
-            ? "Loading..."
-            : data && data.length > 0
-            ? data[0].name
-            : "Belum Ada Produk"}
-        </span>
-      </nav>
+      <div className="relative w-full h-[504px]">
+        <img
+          src={productInCategoryImage}
+          alt="..."
+          className="w-full h-full object-cover"
+        />
+        {isCategoryLoading ? (
+          <div className="absolute inset-0 flex flex-col justify-end items-start text-black text-center px-20 gap-6 mb-20">
+            <h1 className="text-8xl font-extralight">Loading...</h1>
+            <p className="text-3xl font-extralight">Mengambil kategori...</p>
+          </div>
+        ) : (
+          <div className="absolute inset-0 flex flex-col justify-end items-start text-black  px-20 gap-6 mb-20">
+            <h1 className="text-8xl font-extralight">
+              {currentCategory?.name}
+            </h1>
+            <p className="text-3xl font-extralight max-w-3xl">
+              {currentCategory?.description}
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Alert */}
       {alertVisible && (
-        <Alert
-          message={alertMessage}
-          type="success"
-          showIcon
-          closable
-          className="absolute right-4 z-50 top-4"
-        />
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none">
+          <div className="pointer-events-auto">
+            <Alert
+              message={alertMessage}
+              type="success"
+              showIcon
+              closable
+              onClose={() => setAlertVisible(false)}
+              className="shadow-lg"
+            />
+          </div>
+        </div>
       )}
 
-      <div className="w-screen h-screen bg-white pt-10">
-        <div className="flex flex-wrap items-center px-20 gap-6">
-          <p className="text-2xl font-normal">Kategori Produk</p>
-          {categories?.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/product/${cat.id}`}
-              className={`px-4 py-2 rounded-full ${
-                cat.id === categoryId
-                  ? "bg-white text-black font-extralight"
-                  : "bg-white bg-opacity-30 hover:bg-opacity-70 font-light"
-              } transition`}
-            >
-              {cat.name}
-            </Link>
-          ))}
+      <div className="w-full bg-white py-10 overflow-x-hidden">
+        <div className="container mx-auto flex flex-wrap items-center justify-between px-4 md:px-8 gap-6">
+          <div className="flex items-center gap-4">
+            <p className="text-2xl font-normal">Detail Produk</p>
+            {categories?.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/product/${cat.id}`}
+                className={`px-4 py-2 rounded-full ${
+                  cat.id === categoryId
+                    ? "bg-white text-black font-extralight"
+                    : "bg-white bg-opacity-30 hover:bg-opacity-70 font-light"
+                } transition`}
+              >
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+          {/* Breadcrumb */}
+          <nav className="flex items-center text-sm font-light">
+            <div className="flex items-center gap-2 bg-black rounded-full text-white px-4 py-2 cursor-pointer">
+              <FaHome />
+              <Link to="/dashboard">Home</Link>
+            </div>
+            <span className="mx-2">/</span>
+            <span>
+              {isLoading
+                ? "Loading..."
+                : data && data.length > 0
+                ? data[0].name
+                : "Belum Ada Produk"}
+            </span>
+          </nav>
 
           {isLoading ? (
             <p className="text-lg">Loading...</p>
@@ -157,20 +169,20 @@ const AllProduct = () => {
                         key={product.id}
                       >
                         {/* Product Image */}
-                        <img
+                        <Image
                           src={`http://localhost:3888/public/${product.imageProduct}`}
                           alt={product.name}
-                          className="w-[123px] h-[184px] object-contain rounded-md"
+                          className="w-[123px] h-[184px] object-cover rounded-md bg-white"
                         />
 
                         {/* Product Info */}
                         <div className="flex flex-col gap-2 justify-between text-black w-full">
-                          <h1 className="text-lg font-semibold uppercase tracking-widest mb-1">
+                          <h1 className="text-lg font-semibold uppercase tracking-wider mb-1">
                             {product.name}
                           </h1>
-                          <p className="text-sm mb-1">
+                          {/* <p className="text-sm mb-1">
                             Category: {category.name}
-                          </p>
+                          </p> */}
 
                           <div className="text-lg font-bold mb-2">
                             {isPromo && (
@@ -189,7 +201,7 @@ const AllProduct = () => {
                             )}
                           </div>
 
-                          <p className="text-sm font-extralight mb-4 line-clamp-2">
+                          <p className="text-sm mb-4 line-clamp-3">
                             {product.description}
                           </p>
 
@@ -211,7 +223,7 @@ const AllProduct = () => {
 
                           <button
                             onClick={() => handleAddToCart(product)}
-                            className="flex items-center justify-center gap-2 py-2 w-full rounded-full font-semibold text-sm bg-white text-black-600 hover:bg-orange-100 transition"
+                            className="flex items-center justify-center gap-2 p-3 w-full rounded-full font-semibold text-sm bg-black text-white hover:bg-gray-800 transition duration-500"
                           >
                             <TiShoppingCart className="text-xl" />
                             Masukan Keranjang

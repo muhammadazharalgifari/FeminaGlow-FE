@@ -1,8 +1,6 @@
-import React from "react";
-import axiosInstance from "../../ax";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { IoArrowRedo } from "react-icons/io5";
+import axiosInstance from "../../ax";
 
 const CategorySection = () => {
   const {
@@ -43,7 +41,7 @@ const CategorySection = () => {
               <div
                 className="relative group bg-[#FCE2CA] p-8 shadow-md rounded-lg w-[297px] h-[411px] flex items-center justify-center overflow-hidden transition duration-300"
                 data-aos="zoom-in"
-                data-aos-duration="1000"
+                data-aos-duration="1500"
                 key={category.id}
               >
                 {/* Gambar Kategori */}
@@ -54,13 +52,11 @@ const CategorySection = () => {
                 />
 
                 {/* Overlay Hover */}
-                <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition duration-700 z-20 rounded-lg text-white p-6">
-                  <h3 className="text-lg font-semibold tracking-widest uppercase">
+                <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition duration-700 z-20 rounded-lg text-white p-6">
+                  <h3 className="text-xl font-semibold tracking-widest uppercase">
                     {category.name}
                   </h3>
-                  <p className="text-justify text-sm">
-                    {category.description}
-                  </p>
+                  <p className="text-center text-sm">{category.description}</p>
                 </div>
               </div>
             </Link>

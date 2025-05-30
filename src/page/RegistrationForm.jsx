@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Modal } from "antd";
 import { AiOutlineKey, AiOutlineMail, AiOutlineUser } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../ax";
 import background from "../assets/background.png";
 
@@ -12,6 +13,7 @@ const RegistrationForm = () => {
     confirmPassword: "",
     role: "user",
   });
+  const navigate = useNavigate();
   // const [imageProfile, setImageProfile] = useState(null);
   const [message, setMessage] = useState(""); // To display success/error messages
 
@@ -56,6 +58,13 @@ const RegistrationForm = () => {
         },
       });
       setMessage(response.data.message); // Display success message
+
+      Modal.success({
+        title: "Registration Successful",
+        content: "Your account has been created successfully!",
+        centered: true,
+        onOk: () => navigate("/"),
+      });
     } catch (error) {
       setMessage(error.response?.data?.message || "Registration failed");
     }
@@ -144,7 +153,7 @@ const RegistrationForm = () => {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full text-black py-2 rounded-2xl h-11 bg-[#F5BC95] hover:bg-[#E89C69] transition-colors duration-200 tracking-wider"
+                className="w-full text-white py-2 rounded-2xl h-11 bg-[#E89C69] hover:bg-[#D17E4D] transition-colors duration-500 tracking-wider"
               >
                 Submit
               </button>

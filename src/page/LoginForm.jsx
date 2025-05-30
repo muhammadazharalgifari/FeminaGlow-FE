@@ -104,7 +104,7 @@ const LoginForm = () => {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full text-black py-2 bg-[#F5BC95] hover:bg-[#E89C69] transition-colors duration-200 rounded-2xl h-11 tracking-wider"
+                className="w-full text-white py-2 bg-[#E89C69] hover:bg-[#D17E4D] transition-colors duration-500 rounded-2xl h-11 tracking-wider"
               >
                 Login
               </button>

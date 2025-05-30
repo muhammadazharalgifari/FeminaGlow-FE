@@ -19,17 +19,17 @@ const Footer = () => {
           <p className="text-xs font-extralight">Sabtu 09.00 - 15.00 WIB</p>
         </div>
         <div className="flex items-center gap-2">
-          <a href="">
+          <a href="" className="bg-white rounded-full p-2">
             <AiFillTikTok size={30} />
           </a>
-          <a href="">
-            <SiShopee size={26} />
+          <a href="" className="bg-white rounded-full p-2">
+            <SiShopee size={27} className="fill-orange-500" />
           </a>
-          <a href="">
-            <AiFillInstagram size={30} />
+          <a href="" className="bg-white rounded-full p-2">
+            <AiFillInstagram size={30} className="fill-pink-500" />
           </a>
-          <a href="">
-            <IoLogoWhatsapp size={26} />
+          <a href="" className="bg-white rounded-full p-2">
+            <IoLogoWhatsapp size={27} className="fill-green-500" />
           </a>
         </div>
       </div>

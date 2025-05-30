@@ -83,7 +83,7 @@ const ProductPromo = () => {
                 <img
                   src={`http://localhost:3888/public/${product.imageProduct}`}
                   alt={product.name}
-                  className="w-[252px] h-[378px] object-cover"
+                  className="w-[252px] h-[378px] object-contain"
                 />
               </div>
               <h2 className="font-normal text-base text-center line-clamp-2">
@@ -98,7 +98,7 @@ const ProductPromo = () => {
                 </span>
               </div>
               <button
-                className="mt-3 bg-[#FCE2CA] hover:bg-[#F5BC95] w-[222px] h-[41px] rounded-full text-sm font-semibold transition-all duration-200 text-black"
+                className="mt-3 bg-[#FCE2CA] hover:bg-[#F5BC95] w-[222px] h-[41px] rounded-full text-sm font-semibold transition-all duration-500 text-black"
                 onClick={() => handleAddToCart(product)}
                 disabled={addingItemId === product.id}
               >
