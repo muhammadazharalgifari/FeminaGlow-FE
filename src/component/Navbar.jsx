@@ -215,6 +215,46 @@ const Navbar = () => {
     }
   };
 
+  // Menu
+  const items = [
+    {
+      key: "1",
+      label: (
+        <div className="flex items-center gap-2 font-poppins w-full">
+          <BiUser className="text-2xl" />
+          <span className="font-semibold text-white bg-black p-2 rounded-full w-full text-center">
+            Profile
+          </span>
+        </div>
+      ),
+      onClick: showModal,
+    },
+    {
+      key: "2",
+      label: (
+        <div className="flex items-center gap-2 font-poppins w-full">
+          <BiPurchaseTag className="text-2xl" />
+          <span className="font-semibold text-white bg-black p-2 rounded-full w-full text-center">
+            Transaction History
+          </span>
+        </div>
+      ),
+      onClick: handleRiwayatTransaksi,
+    },
+    {
+      key: "3",
+      label: (
+        <div className="flex items-center gap-2 font-poppins w-full">
+          <BiLogOut className="text-2xl" />
+          <span className="font-semibold text-white bg-black p-2 rounded-full w-full text-center">
+            Logout
+          </span>
+        </div>
+      ),
+      onClick: handleLogout,
+    },
+  ];
+
   return (
     <div className="fixed top-0 w-full z-50">
       <div className="h-24 flex items-center justify-between mx-20">
@@ -380,37 +420,7 @@ const Navbar = () => {
           {/* End Checkout Modal */}
 
           {/* Start Dropdown */}
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item key="1" onClick={showModal}>
-                  <div className="flex items-center gap-2 font-poppins w-full">
-                    <BiUser className="text-2xl" />
-                    <span className="font-semibold text-white bg-black p-2 rounded-full w-full text-center">
-                      Profile
-                    </span>
-                  </div>
-                </Menu.Item>
-                <Menu.Item key="2" onClick={handleRiwayatTransaksi}>
-                  <div className="flex items-center gap-2 font-poppins w-full">
-                    <BiPurchaseTag className="text-2xl" />
-                    <span className="font-semibold text-white bg-black p-2 rounded-full w-full text-center">
-                      Transaction History
-                    </span>
-                  </div>
-                </Menu.Item>
-                <Menu.Item key="3" onClick={handleLogout}>
-                  <div className="flex items-center gap-2 font-poppins w-full">
-                    <BiLogOut className="text-2xl" />
-                    <span className="font-semibold text-white bg-black p-2 rounded-full w-full text-center">
-                      Logout
-                    </span>
-                  </div>
-                </Menu.Item>
-              </Menu>
-            }
-            trigger={["click"]}
-          >
+          <Dropdown menu={{ items }} trigger={["click"]}>
             <div className="bg-white p-2 rounded-full">
               <BiUser
                 size={27}

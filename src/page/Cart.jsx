@@ -7,14 +7,24 @@ const CartContext = createContext();
 const useCart = () => useContext(CartContext);
 
 const fetchCartItems = async () => {
-  const response = await axiosInstance.get("/api/cart-items");
-  const { data, total_price, transaction_id } = response.data;
-  // console.log(response.data);
-  return {
-    items: data,
-    totalPrice: total_price,
-    transactionId: transaction_id,
-  };
+  try {
+    const response = await axiosInstance.get("/api/cart-items");
+    const { data, total_price, transaction_id } = response.data;
+    return {
+      items: data,
+      totalPrice: total_price,
+      transactionId: transaction_id,
+    };
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return {
+        items: [],
+        totalPrice: 0,
+        transactionId: null,
+      };
+    }
+    throw error; // rethrow if other error
+  }
 };
 
 const Cart = ({ children }) => {

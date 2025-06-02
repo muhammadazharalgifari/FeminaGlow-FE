@@ -55,8 +55,8 @@ const fetchDailySales = async () => {
 };
 
 const fetchMonthlySales = async () => {
-  const response = await axiosInstance.get("/api/sales/monthly");
-  return response.data.data;
+  const res = await axiosInstance.get("/api/sales/monthly");
+  return res.data;
 };
 
 const Admin = () => {
@@ -143,14 +143,31 @@ const Admin = () => {
     (a, b) => new Date(`${a.month}-01`) - new Date(`${b.month}-01`)
   );
 
+  // Filter data sesuai bulan dan tahun saat ini
+  const now = new Date();
+  const currentMonthStr = format(now, "yyyy-MM", { timeZone });
+  const currentYearStr = format(now, "yyyy", { timeZone });
+
+  // Filter data sesuai bulan saat ini
+  const filteredDailySales = sortedDailySales.filter((item) => {
+    const itemMonthStr = format(new Date(item.date), "yyyy-MM", { timeZone });
+    return itemMonthStr === currentMonthStr;
+  });
+
+  // Filter data sesuai tahun saat ini
+  const filteredMonthlySales = sortedMonthlySales.filter((item) => {
+    const itemYearStr = item.month.split("-")[0];
+    return itemYearStr === currentYearStr;
+  });
+
   const dailySalesChartData = {
-    labels: sortedDailySales.map((item) =>
+    labels: filteredDailySales.map((item) =>
       format(new Date(item.date), "dd MMM", { timeZone })
     ),
     datasets: [
       {
         label: "Daily Sales",
-        data: sortedDailySales.map((item) => Number(item.totalSales)),
+        data: filteredDailySales.map((item) => Number(item.totalSales)),
         backgroundColor: "rgba(71, 85, 105, 0.5)",
         borderColor: "rgba(71, 85, 105, 1)",
         borderWidth: 1,
@@ -159,15 +176,13 @@ const Admin = () => {
   };
 
   const monthlySalesChartData = {
-    labels: sortedMonthlySales.map((item) =>
+    labels: filteredMonthlySales.map((item) =>
       format(new Date(`${item.month}-01`), "MMM yyyy", { timeZone })
     ),
     datasets: [
       {
         label: "Monthly Sales",
-        data: sortedMonthlySales.map((item) =>
-          Number(item.totalSales)
-        ),
+        data: filteredMonthlySales.map((item) => Number(item.totalSales)),
         backgroundColor: "rgba(16, 185, 129, 0.5)",
         borderColor: "rgba(16, 185, 129, 1)",
         borderWidth: 1,

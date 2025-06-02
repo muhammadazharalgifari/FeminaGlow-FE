@@ -37,12 +37,11 @@ const CategorySection = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-36 font-poppins select-none">
           {categories.map((category) => (
-            <Link to={`/product/${category.id}`}>
+            <Link to={`/product/${category.id}`} key={category.id}>
               <div
                 className="relative group bg-[#FCE2CA] p-8 shadow-md rounded-lg w-[297px] h-[411px] flex items-center justify-center overflow-hidden transition duration-300"
                 data-aos="zoom-in"
                 data-aos-duration="1500"
-                key={category.id}
               >
                 {/* Gambar Kategori */}
                 <img
