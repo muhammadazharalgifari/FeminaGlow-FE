@@ -172,7 +172,7 @@ const AllProduct = () => {
                         <Image
                           src={`http://localhost:3888/public/${product.imageProduct}`}
                           alt={product.name}
-                          className="w-[123px] h-[184px] object-cover rounded-md bg-white"
+                          className="w-[123px] h-[184px] object-cover rounded-md"
                         />
 
                         {/* Product Info */}

@@ -265,11 +265,19 @@ const ProductAdmin = () => {
     { title: "Stock", dataIndex: "stock" },
     {
       title: "Promo",
-      render: (_, record) =>
-        record.isPromo && record.promoEnd ? (
+      render: (_, record) => {
+        const now = dayjs();
+        const promoActive =
+          record.isPromo &&
+          record.promoStart &&
+          record.promoEnd &&
+          now.isAfter(dayjs(record.promoStart)) &&
+          now.isBefore(dayjs(record.promoEnd));
+
+        return promoActive ? (
           <div className="text-green-600">{`${formatToRupiah(
             record.promoPrice
-          )} *Promo until date ${dayjs(record.promoEnd).format(
+          )} *Promo until ${dayjs(record.promoEnd).format(
             "DD/MM/YYYY"
           )}*`}</div>
         ) : (
@@ -279,7 +287,22 @@ const ProductAdmin = () => {
               Regular Price, No Promo!
             </span>
           </div>
-        ),
+        );
+      },
+      // record.isPromo && record.promoEnd ? (
+      //   <div className="text-green-600">{`${formatToRupiah(
+      //     record.promoPrice
+      //   )} *Promo until date ${dayjs(record.promoEnd).format(
+      //     "DD/MM/YYYY"
+      //   )}*`}</div>
+      // ) : (
+      //   <div className="flex items-center gap-2">
+      //     <FcCancel className="text-5xl" />
+      //     <span className="text-xs text-red-700">
+      //       Regular Price, No Promo!
+      //     </span>
+      //   </div>
+      // ),
     },
     {
       title: "Product Image",
