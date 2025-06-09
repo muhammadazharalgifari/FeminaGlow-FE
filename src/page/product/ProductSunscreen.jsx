@@ -158,10 +158,21 @@ const AllProduct = () => {
               <div className="p-4 grid grid-cols-2 md:grid-cols-2 gap-8">
                 {data?.map((category) =>
                   category.products.map((product) => {
-                    const isPromo = product.isPromo;
-                    const displayPrice = isPromo
+                    const now = new Date();
+                    const startDate = new Date(product.promoStart);
+                    const endDate = new Date(product.promoEnd);
+
+                    const isPromoActive =
+                      product.isPromo && now >= startDate && now <= endDate;
+
+                    const displayPrice = isPromoActive
                       ? product.promoPrice
                       : product.price;
+
+                    // const isPromo = product.isPromo;
+                    // const displayPrice = isPromo
+                    //   ? product.promoPrice
+                    //   : product.price;
 
                     return (
                       <div
@@ -183,14 +194,13 @@ const AllProduct = () => {
                           {/* <p className="text-sm mb-1">
                             Category: {category.name}
                           </p> */}
-
                           <div className="text-lg font-bold mb-2">
-                            {isPromo && (
+                            {isPromoActive && (
                               <span className="text-red-500 mr-2">
                                 IDR {product.promoPrice.toLocaleString("id-ID")}
                               </span>
                             )}
-                            {isPromo ? (
+                            {isPromoActive ? (
                               <span className="line-through text-black text-sm">
                                 IDR {product.price.toLocaleString("id-ID")}
                               </span>

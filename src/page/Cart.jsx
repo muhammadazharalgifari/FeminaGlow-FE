@@ -43,10 +43,9 @@ const Cart = ({ children }) => {
   });
 
   const addToCartMutation = useMutation({
-    mutationFn: async ({ productId, quantity, price }) => {
+    mutationFn: async ({ productId, quantity }) => {
       const response = await axiosInstance.post(`/api/cart-item/${productId}`, {
         quantity,
-        price,
       });
       // console.log(response.data.data);
       return response.data.data;
@@ -79,8 +78,8 @@ const Cart = ({ children }) => {
     },
   });
 
-  const addToCart = (productId, quantity, price) => {
-    addToCartMutation.mutate({ productId, quantity, price });
+  const addToCart = (productId, quantity) => {
+    addToCartMutation.mutate({ productId, quantity});
   };
 
   const removeFromCart = (id) => {
